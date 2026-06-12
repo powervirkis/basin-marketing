@@ -231,6 +231,44 @@
     .btn-ghost-invert { background: transparent; color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.15); }
     .btn-ghost-invert:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
 
+    /* ── Contact form ── */
+    .contact-form { display: flex; flex-direction: column; gap: 12px; max-width: 420px; }
+    .contact-form input,
+    .contact-form textarea {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius);
+      color: #fff; font-size: 0.9rem; font-family: inherit;
+      padding: 11px 16px; width: 100%;
+      outline: none; transition: border-color var(--t);
+    }
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder { color: rgba(255,255,255,0.28); }
+    .contact-form input:focus,
+    .contact-form textarea:focus { border-color: rgba(255,255,255,0.35); }
+    .contact-form textarea { resize: vertical; min-height: 90px; }
+    .form-row { display: flex; gap: 10px; }
+    .form-row input { flex: 1; }
+    .form-status {
+      font-size: 0.85rem; margin-top: 4px; min-height: 1.2em;
+      color: rgba(255,255,255,0.55);
+    }
+    .form-status.error { color: #f87171; }
+    .form-status.success { color: #6ee7b7; }
+    .btn-submit {
+      align-self: flex-start; background: #fff; color: var(--text);
+      border: none; border-radius: var(--radius);
+      padding: 11px 26px; font-size: 0.9rem; font-weight: 700;
+      cursor: pointer; transition: background var(--t);
+    }
+    .btn-submit:hover:not(:disabled) { background: #e5e5e5; }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .cta-footer {
+      margin-top: 20px; font-size: 0.8rem; color: rgba(255,255,255,0.35);
+    }
+    .cta-footer a { color: rgba(255,255,255,0.5); text-decoration: underline; }
+    .cta-footer a:hover { color: rgba(255,255,255,0.8); }
+
     /* ── Footer ── */
     footer { border-top: 1px solid var(--border); padding: 32px 0; }
     .footer-inner {
@@ -435,10 +473,17 @@
   <div class="cta-inner reveal">
     <h2>Let's talk about<br/>your data.</h2>
     <p>Kataba is a custom solution, deployed specifically for your team and your environment.</p>
-    <div class="cta-actions">
-      <a href="mailto:hello@kataba.ai?subject=Deployment Inquiry" class="btn btn-invert btn-lg">Get in Touch</a>
-      <a href="mailto:hello@kataba.ai?subject=Schedule Demo" class="btn btn-ghost-invert btn-lg">Schedule a Demo</a>
-    </div>
+    <form class="contact-form" id="contactForm" novalidate>
+      <div class="form-row">
+        <input type="text" name="name" placeholder="Your name" autocomplete="name" />
+        <input type="text" name="company" placeholder="Company" autocomplete="organization" />
+      </div>
+      <input type="email" name="email" placeholder="Work email *" required autocomplete="email" />
+      <textarea name="message" placeholder="What would you like to discuss? (optional)"></textarea>
+      <button type="submit" class="btn-submit" id="submitBtn">Send Message</button>
+      <p class="form-status" id="formStatus" aria-live="polite"></p>
+    </form>
+    <p class="cta-footer">Prefer email? Reach us at <a href="mailto:hello@kataba.ai">hello@kataba.ai</a></p>
   </div>
 </section>
 
@@ -462,6 +507,53 @@
   document.querySelectorAll('.reveal').forEach((el, i) => {
     el.style.transitionDelay = `${(i % 4) * 0.07}s`;
     observer.observe(el);
+  });
+
+  // ── Contact form ─────────────────────────────────────────────────────────
+  const form       = document.getElementById('contactForm');
+  const submitBtn  = document.getElementById('submitBtn');
+  const statusEl   = document.getElementById('formStatus');
+
+  function setStatus(msg, type) {
+    statusEl.textContent = msg;
+    statusEl.className = 'form-status' + (type ? ' ' + type : '');
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = form.email.value.trim();
+    if (!email) { setStatus('Please enter your email address.', 'error'); return; }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+    setStatus('');
+
+    try {
+      const res = await fetch('/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          name:    form.name.value.trim(),
+          company: form.company.value.trim(),
+          message: form.message.value.trim(),
+        }),
+      });
+
+      const json = await res.json().catch(() => ({}));
+
+      if (res.ok && json.ok) {
+        form.reset();
+        setStatus("Thanks — we'll be in touch soon.", 'success');
+        submitBtn.textContent = 'Sent';
+      } else {
+        throw new Error(json.error || `Server error (${res.status})`);
+      }
+    } catch (err) {
+      setStatus('Something went wrong. Please email us at hello@kataba.ai', 'error');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send Message';
+    }
   });
 </script>
 </body>
