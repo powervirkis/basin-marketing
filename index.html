@@ -79,9 +79,13 @@
     h1 em {
       font-style: normal; color: var(--amber);
     }
+    .hero-audience {
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--amber); margin-bottom: 16px;
+    }
     .hero-sub {
       font-size: 1.15rem; color: var(--muted);
-      max-width: 460px; margin-bottom: 40px; line-height: 1.65;
+      max-width: 500px; margin-bottom: 40px; line-height: 1.65;
     }
     .hero-ctas { display: flex; gap: 10px; flex-wrap: wrap; }
 
@@ -102,6 +106,10 @@
       max-width: 600px; margin-bottom: 64px; color: var(--text);
     }
     .pain-intro em { font-style: normal; color: var(--amber); }
+    .pain-body {
+      font-size: 1rem; color: var(--muted); max-width: 620px;
+      margin-bottom: 48px; line-height: 1.7;
+    }
     .pain-list {
       display: flex; flex-direction: column; gap: 0;
       border-top: 1px solid var(--border);
@@ -134,7 +142,11 @@
     .solution-headline {
       font-size: clamp(1.6rem, 3.5vw, 2.6rem);
       font-weight: 800; line-height: 1.15; letter-spacing: -0.03em;
-      max-width: 520px; margin-bottom: 56px;
+      max-width: 520px; margin-bottom: 16px;
+    }
+    .solution-sub {
+      font-size: 1rem; color: var(--muted); max-width: 520px;
+      line-height: 1.7; margin-bottom: 48px;
     }
     .pillars {
       display: grid; grid-template-columns: repeat(3, 1fr);
@@ -317,6 +329,49 @@
       display: block;
     }
 
+    /* ── Pilot ── */
+    #pilot {
+      max-width: 1000px; margin: 0 auto;
+      padding: 80px 32px;
+    }
+    .pilot-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 32px; margin-top: 40px;
+    }
+    .pilot-col {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 32px 28px;
+    }
+    .pilot-col-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--amber); margin-bottom: 20px;
+    }
+    .pilot-list {
+      list-style: none; display: flex; flex-direction: column; gap: 12px;
+    }
+    .pilot-list li {
+      font-size: 0.9rem; color: var(--muted); padding-left: 16px;
+      position: relative; line-height: 1.5;
+    }
+    .pilot-list li::before {
+      content: '—'; position: absolute; left: 0; color: var(--dim);
+    }
+    @media (max-width: 700px) { .pilot-grid { grid-template-columns: 1fr; } }
+
+    /* ── Team ── */
+    #team {
+      max-width: 1000px; margin: 0 auto;
+      padding: 64px 32px;
+    }
+    .team-inner { max-width: 600px; }
+    .team-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--amber); margin-bottom: 16px;
+    }
+    .team-body {
+      font-size: 1rem; color: var(--muted); line-height: 1.75;
+    }
+
     /* ── Name origin ── */
     #origin {
       max-width: 1000px; margin: 0 auto;
@@ -363,17 +418,18 @@
       <div class="logo-mark">K</div>
       Kataba
     </a>
-    <a href="#cta" class="btn btn-primary">Get in Touch</a>
+    <a href="#cta" class="btn btn-primary">Discuss a Pilot</a>
   </div>
 </nav>
 
 <!-- ── Hero ── -->
 <section id="hero">
   <h1>Your company knows<br/>more than it<br/><em>can find.</em></h1>
-  <p class="hero-sub">Decades of basin reports, well logs, and interpretations — locked in folders nobody can search.</p>
+  <p class="hero-audience">AI knowledge retrieval for geoscience, subsurface, and technical energy teams.</p>
+  <p class="hero-sub">Kataba turns legacy reports, well files, maps, scanned documents, and interpretations into source-cited answers your team can verify.</p>
   <div class="hero-ctas">
-    <a href="#cta" class="btn btn-primary btn-lg">Get in Touch</a>
-    <a href="#solution" class="btn btn-ghost btn-lg">See How It Works</a>
+    <a href="#visual" class="btn btn-primary btn-lg">See the Demo</a>
+    <a href="#cta" class="btn btn-ghost btn-lg">Discuss a Pilot</a>
   </div>
 </section>
 
@@ -387,67 +443,55 @@
 <!-- ── Pain ── -->
 <section id="pain">
   <p class="pain-intro">
-    The average geoscientist spends <em>30–40%</em> of their time hunting for knowledge that already exists inside their own company.
+    The knowledge exists. <em>Finding it is the problem.</em>
   </p>
+  <p class="pain-body">Subsurface teams often have decades of valuable technical knowledge scattered across PDFs, scanned reports, PowerPoints, maps, well files, shared drives, inboxes, and retired experts' laptops. When that knowledge is hard to retrieve, teams lose time, recreate prior work, and make decisions without full context.</p>
   <div class="pain-list reveal">
     <div class="pain-item">
       <span class="pain-num">01</span>
       <span class="pain-text">Reports no one can search</span>
-      <span class="pain-detail">PDFs scattered across drives, inboxes, and laptops with no consistent structure</span>
+      <span class="pain-detail">Technical PDFs, scans, maps, and presentations scattered across drives and inboxes</span>
     </div>
     <div class="pain-item">
       <span class="pain-num">02</span>
-      <span class="pain-text">Knowledge that retires with its owner</span>
-      <span class="pain-detail">20 years of asset intuition — gone when a senior geologist walks out the door</span>
+      <span class="pain-text">Knowledge that leaves with people</span>
+      <span class="pain-detail">Years of asset intuition disappear when senior experts retire or move on</span>
     </div>
     <div class="pain-item">
       <span class="pain-num">03</span>
       <span class="pain-text">Work that gets done twice</span>
-      <span class="pain-detail">Teams re-run studies that already exist because nobody knew to look</span>
+      <span class="pain-detail">Teams rerun studies because prior analyses are buried or unknown</span>
     </div>
     <div class="pain-item">
       <span class="pain-num">04</span>
       <span class="pain-text">Decisions that wait on searches</span>
-      <span class="pain-detail">Three days of emailing colleagues to find data that was in a 2011 report all along</span>
+      <span class="pain-detail">Asset reviews slow down while teams hunt for the right report, map, or interpretation</span>
     </div>
   </div>
 </section>
 
-<!-- ── Name origin ── -->
-<section id="origin" class="reveal">
-  <img src="assets/katabasis-explainer.png" alt="From katabasis — descent into the earth" />
-  <div class="origin-text">
-    <h2>Named for the descent.</h2>
-    <p>
-      Kataba takes its name from <em>katabasis</em> (κατάβασις) — the ancient Greek word for a journey downward. Like the geoscientist's path into the subsurface, Kataba uncovers what's buried beneath the surface, turning complexity into understanding.
-    </p>
-    <p class="tagline">Descend. Discover. Decide.</p>
-  </div>
-</section>
-
-<hr class="divider" />
-
 <!-- ── Solution ── -->
 <section id="solution">
   <div class="solution-label reveal">The Solution</div>
-  <h2 class="solution-headline reveal">Ask your documents a question. Get an answer with a source.</h2>
+  <h2 class="solution-headline reveal">Ask your technical documents a question. Get an answer with evidence.</h2>
+  <p class="solution-sub reveal">Kataba retrieves relevant passages from your document set, ranks the evidence, and generates a concise answer with citations back to the original source.</p>
   <div class="solution-body reveal">
     <img src="assets/retrieval-diagram.png" alt="Document retrieval from subsurface knowledge layers" />
     <div class="pillars" style="grid-template-columns:1fr; border-radius:14px;">
       <div class="pillar">
         <div class="pillar-num">01</div>
-        <h3>Private by design</h3>
-        <p>Kataba is deployed into your environment. Your proprietary data never leaves your network.</p>
+        <h3>Designed for private deployment</h3>
+        <p>Kataba can be deployed in a controlled environment so proprietary documents remain isolated and traceable.</p>
       </div>
       <div class="pillar">
         <div class="pillar-num">02</div>
-        <h3>Plain-English queries</h3>
-        <p>Ask the way you'd ask a colleague. No query language. No training required.</p>
+        <h3>Plain-English questions</h3>
+        <p>Ask by basin, field, formation, well, interval, or concept — the way you'd ask a colleague. No query language. No training required.</p>
       </div>
       <div class="pillar">
         <div class="pillar-num">03</div>
         <h3>Every answer is cited</h3>
-        <p>Document name and page number, every time. Verify before you act.</p>
+        <p>Source document, page number, and retrieved evidence are shown so users can verify before acting.</p>
       </div>
     </div>
   </div>
@@ -460,7 +504,7 @@
       <div class="chat-bar-dot d1"></div>
       <div class="chat-bar-dot d2"></div>
       <div class="chat-bar-dot d3"></div>
-      <div class="chat-bar-title">kataba · 127 documents indexed</div>
+      <div class="chat-bar-title">kataba · demo corpus · 127 documents indexed</div>
     </div>
     <div class="chat-body">
       <div class="chat-msg">
@@ -470,9 +514,9 @@
       <div class="chat-msg">
         <div class="chat-avatar ai-avatar">K</div>
         <div class="chat-bubble">
-          Three internal studies confirm high thermal maturity (Ro 1.1–1.4%) between 3,800–4,200 m depth.
+          In this demo corpus, several indexed documents discuss high thermal maturity (Ro 1.1–1.4%) between 3,800–4,200 m depth.
           <span class="citation">📄 Robertson_2019 p.14</span>
-          The 2022 basin model raised maturity window estimates by ~8% after revised heat-flow calibration.
+          A later basin model raised maturity window estimates by ~8% after revised heat-flow calibration.
           <span class="citation">📄 BasinModel_2022 p.7</span>
           One dissenting memo flags a local depocenter anomaly in the northern block.
           <span class="citation">📄 NBlock_Memo_2021 p.3</span>
@@ -490,18 +534,76 @@
 
 <hr class="divider" />
 
+<!-- ── Pilot ── -->
+<section id="pilot">
+  <div class="solution-label reveal">How We Work</div>
+  <h2 class="solution-headline reveal">Pilot with a focused document set.</h2>
+  <p class="solution-sub reveal">We start with a limited, well-defined corpus so retrieval quality, citation accuracy, and high-value workflows can be validated before any broader deployment.</p>
+  <div class="pilot-grid reveal">
+    <div class="pilot-col">
+      <p class="pilot-col-label">Typical corpus</p>
+      <ul class="pilot-list">
+        <li>Basin reports and field studies</li>
+        <li>Well files and completion reports</li>
+        <li>Scanned PDFs and legacy maps</li>
+        <li>Technical presentations and memos</li>
+        <li>Interpretations and internal analyses</li>
+      </ul>
+    </div>
+    <div class="pilot-col">
+      <p class="pilot-col-label">Typical pilot goals</p>
+      <ul class="pilot-list">
+        <li>Test retrieval quality and citation accuracy</li>
+        <li>Identify high-value workflows</li>
+        <li>Estimate time saved per team member</li>
+        <li>Validate knowledge coverage</li>
+        <li>Define deployment requirements</li>
+      </ul>
+    </div>
+  </div>
+  <div style="margin-top:40px;" class="reveal">
+    <a href="#cta" class="btn btn-primary btn-lg">Discuss a 4–6 Week Pilot</a>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── Team credibility ── -->
+<section id="team">
+  <div class="team-inner reveal">
+    <p class="team-label">Built by geoscience and software operators</p>
+    <p class="team-body">Kataba is being developed by a team with backgrounds in geoscience, GIS, AI retrieval, software systems, and industrial technology execution. We are speaking with early teams who want to validate the value before committing to a broader deployment.</p>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── Name origin ── -->
+<section id="origin" class="reveal">
+  <img src="assets/katabasis-explainer.png" alt="From katabasis — descent into the earth" />
+  <div class="origin-text">
+    <h2>Named for the descent.</h2>
+    <p>
+      Kataba takes its name from <em>katabasis</em> (κατάβασις) — the ancient Greek word for a journey downward. Like the geoscientist's path into the subsurface, Kataba uncovers what's buried beneath the surface, turning complexity into understanding.
+    </p>
+    <p class="tagline">Descend. Discover. Decide.</p>
+  </div>
+</section>
+
+<hr class="divider" />
+
 <!-- ── CTA ── -->
 <section id="cta">
   <div class="cta-inner reveal">
-    <h2>Let's talk about<br/>your data.</h2>
-    <p>Kataba is a custom solution, deployed specifically for your team and your environment.</p>
+    <h2>Want to test Kataba on a<br/>real document set?</h2>
+    <p>We are speaking with geoscience and subsurface teams dealing with legacy reports, maps, scans, and fragmented technical knowledge.</p>
     <div id="sib-form-container" class="sib-form-container">
-      <div id="error-message" class="sib-form-message-panel">
+      <div id="error-message" class="sib-form-message-panel" aria-hidden="true" aria-live="polite">
         <div class="sib-form-message-panel__text sib-form-message-panel__text--center">
           <span class="sib-form-message-panel__inner-text">Your submission could not be saved. Please try again.</span>
         </div>
       </div>
-      <div id="success-message" class="sib-form-message-panel">
+      <div id="success-message" class="sib-form-message-panel" aria-hidden="true" aria-live="polite">
         <div class="sib-form-message-panel__text sib-form-message-panel__text--center">
           <span class="sib-form-message-panel__inner-text">Thanks — we'll be in touch soon.</span>
         </div>
@@ -571,7 +673,7 @@
       <div class="logo-mark">K</div>
       <span style="font-weight:800;font-size:0.95rem;letter-spacing:-0.02em;color:var(--text);">Kataba</span>
     </a>
-    <span class="footer-copy">AI knowledge retrieval for geoscience teams.</span>
+    <span class="footer-copy">AI knowledge retrieval for geoscience, subsurface, and technical energy teams.</span>
   </div>
 </footer>
 
@@ -619,8 +721,10 @@
       sibForm.reset();
       document.getElementById('sib-container').style.display = 'none';
       sibSuccess.style.display = 'block';
+      sibSuccess.setAttribute('aria-hidden', 'false');
     } catch {
       sibError.style.display = 'block';
+      sibError.setAttribute('aria-hidden', 'false');
       sibSubmit.disabled = false;
       sibSubmit.textContent = 'Send Message';
     }
