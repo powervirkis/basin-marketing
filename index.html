@@ -510,11 +510,6 @@
   });
 
   // ── Contact form ─────────────────────────────────────────────────────────
-  // Calls Brevo directly from the browser so the request comes from the
-  // visitor's IP, avoiding Brevo's server-side IP-authorization check.
-  const BREVO_KEY     = 'REPLACE_WITH_YOUR_BREVO_API_KEY';
-  const BREVO_LIST_ID = 0; // replace with your numeric list ID
-
   const form       = document.getElementById('contactForm');
   const submitBtn  = document.getElementById('submitBtn');
   const statusEl   = document.getElementById('formStatus');
@@ -526,46 +521,33 @@
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const email   = form.email.value.trim();
-    const name    = form.name.value.trim();
-    const company = form.company.value.trim();
-
+    const email = form.email.value.trim();
     if (!email) { setStatus('Please enter your email address.', 'error'); return; }
 
     submitBtn.disabled = true;
     submitBtn.textContent = 'Sending…';
     setStatus('');
 
-    const payload = {
-      email,
-      updateEnabled: true,
-      attributes: {},
-    };
-    if (name) {
-      const parts = name.split(' ');
-      payload.attributes.FIRSTNAME = parts[0];
-      if (parts.length > 1) payload.attributes.LASTNAME = parts.slice(1).join(' ');
-    }
-    if (company) payload.attributes.COMPANY = company;
-    if (BREVO_LIST_ID) payload.listIds = [BREVO_LIST_ID];
-
     try {
-      const res = await fetch('https://api.brevo.com/v3/contacts', {
+      const res = await fetch('/subscribe', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'api-key': BREVO_KEY,
-        },
-        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          name:    form.name.value.trim(),
+          company: form.company.value.trim(),
+          message: form.message.value.trim(),
+        }),
       });
 
-      if (res.ok || res.status === 204) {
+      const json = await res.json().catch(() => ({}));
+
+      if (res.ok && json.ok) {
         form.reset();
         setStatus("Thanks — we'll be in touch soon.", 'success');
         submitBtn.textContent = 'Sent';
       } else {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.message || `Error ${res.status}`);
+        throw new Error(json.error || `Server error (${res.status})`);
       }
     } catch (err) {
       setStatus('Something went wrong. Please email us at hello@kataba.ai', 'error');
