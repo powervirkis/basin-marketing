@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kataba</title>
   <meta name="description" content="Your company knows more than it can find. Kataba changes that." />
+  <link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -231,38 +232,58 @@
     .btn-ghost-invert { background: transparent; color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.15); }
     .btn-ghost-invert:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
 
-    /* ── Contact form ── */
-    .contact-form { display: flex; flex-direction: column; gap: 12px; max-width: 420px; }
-    .contact-form input,
-    .contact-form textarea {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: var(--radius);
-      color: #fff; font-size: 0.9rem; font-family: inherit;
-      padding: 11px 16px; width: 100%;
-      outline: none; transition: border-color var(--t);
+    /* ── Brevo form overrides (dark CTA context) ── */
+    .sib-form { text-align: left !important; background: transparent !important; padding: 0 !important; }
+    #sib-form-container { max-width: 420px; }
+    #sib-container {
+      background: transparent !important; border: none !important;
+      border-radius: 0 !important; text-align: left !important;
+      padding: 0 !important; max-width: 420px !important;
     }
-    .contact-form input::placeholder,
-    .contact-form textarea::placeholder { color: rgba(255,255,255,0.28); }
-    .contact-form input:focus,
-    .contact-form textarea:focus { border-color: rgba(255,255,255,0.35); }
-    .contact-form textarea { resize: vertical; min-height: 90px; }
-    .form-row { display: flex; gap: 10px; }
-    .form-row input { flex: 1; }
-    .form-status {
-      font-size: 0.85rem; margin-top: 4px; min-height: 1.2em;
-      color: rgba(255,255,255,0.55);
+    #sib-form > div { padding: 5px 0 !important; }
+    .sib-form-block { padding: 0 !important; }
+    .form__label-row { flex-direction: column !important; align-items: flex-start !important; }
+    .entry__label { display: none !important; }
+    .entry__field { width: 100% !important; }
+    #sib-container .input {
+      background: rgba(255,255,255,0.07) !important;
+      border: 1px solid rgba(255,255,255,0.12) !important;
+      border-radius: var(--radius) !important;
+      color: #fff !important; font-size: 0.9rem !important;
+      font-family: inherit !important; padding: 11px 16px !important;
+      width: 100% !important; transition: border-color var(--t) !important;
     }
-    .form-status.error { color: #f87171; }
-    .form-status.success { color: #6ee7b7; }
-    .btn-submit {
-      align-self: flex-start; background: #fff; color: var(--text);
-      border: none; border-radius: var(--radius);
-      padding: 11px 26px; font-size: 0.9rem; font-weight: 700;
-      cursor: pointer; transition: background var(--t);
+    #sib-container .input:focus { border-color: rgba(255,255,255,0.35) !important; outline: none !important; }
+    #sib-container .input::placeholder { color: rgba(255,255,255,0.28) !important; }
+    .brevo-row { display: flex; gap: 10px; padding: 5px 0; }
+    .brevo-row > div { flex: 1; }
+    .sib-form-block__button {
+      background: #fff !important; color: var(--text) !important;
+      font-family: inherit !important; font-size: 0.9rem !important;
+      font-weight: 700 !important; border-radius: var(--radius) !important;
+      padding: 11px 26px !important; border: none !important;
+      cursor: pointer !important; text-transform: none !important;
+      letter-spacing: 0 !important; transition: background var(--t) !important;
+      margin-top: 4px;
     }
-    .btn-submit:hover:not(:disabled) { background: #e5e5e5; }
-    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .sib-form-block__button:hover { background: #e5e5e5 !important; }
+    .sib-hide-loader-icon { display: none !important; }
+    #success-message, #error-message {
+      background: transparent !important; border: none !important;
+      border-radius: 0 !important; padding: 0 !important;
+      max-width: 420px !important; margin-bottom: 8px;
+    }
+    #success-message { color: #6ee7b7 !important; }
+    #error-message { color: #f87171 !important; }
+    #success-message .sib-form-message-panel__text,
+    #error-message .sib-form-message-panel__text {
+      background: transparent !important; font-family: inherit !important;
+      font-size: 0.875rem !important; justify-content: flex-start !important;
+    }
+    .sib-notification__icon { display: none !important; }
+    .entry__error { font-family: inherit !important; font-size: 0.75rem !important;
+      background: transparent !important; border: none !important;
+      color: #f87171 !important; padding: 2px 0 !important; }
     .cta-footer {
       margin-top: 20px; font-size: 0.8rem; color: rgba(255,255,255,0.35);
     }
@@ -473,16 +494,72 @@
   <div class="cta-inner reveal">
     <h2>Let's talk about<br/>your data.</h2>
     <p>Kataba is a custom solution, deployed specifically for your team and your environment.</p>
-    <form class="contact-form" id="contactForm" novalidate>
-      <div class="form-row">
-        <input type="text" name="name" placeholder="Your name" autocomplete="name" />
-        <input type="text" name="company" placeholder="Company" autocomplete="organization" />
+    <div id="sib-form-container" class="sib-form-container">
+      <div id="error-message" class="sib-form-message-panel">
+        <div class="sib-form-message-panel__text sib-form-message-panel__text--center">
+          <span class="sib-form-message-panel__inner-text">Your submission could not be saved. Please try again.</span>
+        </div>
       </div>
-      <input type="email" name="email" placeholder="Work email *" required autocomplete="email" />
-      <textarea name="message" placeholder="What would you like to discuss? (optional)"></textarea>
-      <button type="submit" class="btn-submit" id="submitBtn">Send Message</button>
-      <p class="form-status" id="formStatus" aria-live="polite"></p>
-    </form>
+      <div id="success-message" class="sib-form-message-panel">
+        <div class="sib-form-message-panel__text sib-form-message-panel__text--center">
+          <span class="sib-form-message-panel__inner-text">Thanks — we'll be in touch soon.</span>
+        </div>
+      </div>
+      <div id="sib-container" class="sib-container--large sib-container--vertical">
+        <form id="sib-form" method="POST" action="https://0199293e.sibforms.com/v2/serve/MUIFAMUBbuCPTqP9vrwCnKtIkHBY7hZRqPQGhm34djRMI_AXHmskPn1lgZsDPtAITaYWHg5kE2f0T2z8kHs5W5mmqKX-FFhTx5-f1sTNW32SFMjGwtsKCteg1lgSPdgePT8BuGNajexeRbJh3-qBc4OtKQ-LFPCSvGqwxri-WJWO5i1IGbVQpbrhVSU0EaIQP-VXp_3t2k-edp-g" data-type="subscription">
+          <div class="brevo-row">
+            <div class="sib-input sib-form-block">
+              <div class="form__entry entry_block">
+                <div class="form__label-row">
+                  <div class="entry__field">
+                    <input class="input" maxlength="200" type="text" id="FIRSTNAME" name="FIRSTNAME" autocomplete="given-name" placeholder="First name" data-required="true" required />
+                  </div>
+                </div>
+                <label class="entry__error entry__error--primary"></label>
+              </div>
+            </div>
+            <div class="sib-input sib-form-block">
+              <div class="form__entry entry_block">
+                <div class="form__label-row">
+                  <div class="entry__field">
+                    <input class="input" maxlength="200" type="text" id="LASTNAME" name="LASTNAME" autocomplete="family-name" placeholder="Last name" data-required="true" required />
+                  </div>
+                </div>
+                <label class="entry__error entry__error--primary"></label>
+              </div>
+            </div>
+          </div>
+          <div class="sib-input sib-form-block">
+            <div class="form__entry entry_block">
+              <div class="form__label-row">
+                <div class="entry__field">
+                  <input class="input" maxlength="200" type="text" id="name" name="COMPANY:name" autocomplete="organization" placeholder="Company" data-required="true" required />
+                </div>
+              </div>
+              <label class="entry__error entry__error--primary"></label>
+            </div>
+          </div>
+          <div class="sib-input sib-form-block">
+            <div class="form__entry entry_block">
+              <div class="form__label-row">
+                <div class="entry__field">
+                  <input class="input" type="email" id="EMAIL" name="EMAIL" autocomplete="email" placeholder="Work email *" data-required="true" required />
+                </div>
+              </div>
+              <label class="entry__error entry__error--primary"></label>
+            </div>
+          </div>
+          <div class="sib-form-block">
+            <button class="sib-form-block__button sib-form-block__button-with-loader" form="sib-form" type="submit">
+              <svg class="icon clickable__icon progress-indicator__icon sib-hide-loader-icon" viewBox="0 0 512 512"><path d="M460.116 373.846l-20.823-12.022c-5.541-3.199-7.54-10.159-4.663-15.874 30.137-59.886 28.343-131.652-5.386-189.946-33.641-58.394-94.896-95.833-161.827-99.676C261.028 55.961 256 50.751 256 44.352V20.309c0-6.904 5.808-12.337 12.703-11.982 83.556 4.306 160.163 50.864 202.11 123.677 42.063 72.696 44.079 162.316 6.031 236.832-3.14 6.148-10.75 8.461-16.728 5.01z"/></svg>
+              Send Message
+            </button>
+          </div>
+          <input type="text" name="email_address_check" value="" class="input--hidden">
+          <input type="hidden" name="locale" value="en">
+        </form>
+      </div>
+    </div>
     <p class="cta-footer">Prefer email? Reach us at <a href="mailto:hello@kataba.ai">hello@kataba.ai</a></p>
   </div>
 </section>
@@ -509,52 +586,17 @@
     observer.observe(el);
   });
 
-  // ── Contact form ─────────────────────────────────────────────────────────
-  const form       = document.getElementById('contactForm');
-  const submitBtn  = document.getElementById('submitBtn');
-  const statusEl   = document.getElementById('formStatus');
-
-  function setStatus(msg, type) {
-    statusEl.textContent = msg;
-    statusEl.className = 'form-status' + (type ? ' ' + type : '');
-  }
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = form.email.value.trim();
-    if (!email) { setStatus('Please enter your email address.', 'error'); return; }
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending…';
-    setStatus('');
-
-    try {
-      const res = await fetch('/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          name:    form.name.value.trim(),
-          company: form.company.value.trim(),
-          message: form.message.value.trim(),
-        }),
-      });
-
-      const json = await res.json().catch(() => ({}));
-
-      if (res.ok && json.ok) {
-        form.reset();
-        setStatus("Thanks — we'll be in touch soon.", 'success');
-        submitBtn.textContent = 'Sent';
-      } else {
-        throw new Error(json.error || `Server error (${res.status})`);
-      }
-    } catch (err) {
-      setStatus('Something went wrong. Please email us at hello@kataba.ai', 'error');
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Send Message';
-    }
-  });
+  // ── Brevo form config ────────────────────────────────────────────────────
+  window.REQUIRED_CODE_ERROR_MESSAGE = 'Please choose a country code';
+  window.LOCALE = 'en';
+  window.EMAIL_INVALID_MESSAGE = window.SMS_INVALID_MESSAGE = "The information provided is invalid. Please review the field format and try again.";
+  window.REQUIRED_ERROR_MESSAGE = "This field cannot be left blank.";
+  window.GENERIC_INVALID_MESSAGE = "The information provided is invalid. Please review the field format and try again.";
+  window.INVALID_DATE = "Please enter a valid date";
+  window.REQUIRED_MULTISELECT_MESSAGE = 'Please select at least 1 option';
+  window.translation = { common: { selectedList: '{quantity} list selected', selectedLists: '{quantity} lists selected', selectedOption: '{quantity} selected', selectedOptions: '{quantity} selected' } };
+  var AUTOHIDE = Boolean(1);
 </script>
+<script defer src="https://sibforms.com/forms/end-form/build/main.js"></script>
 </body>
 </html>
