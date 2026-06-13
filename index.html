@@ -329,6 +329,53 @@
       display: block;
     }
 
+    /* ── ROI callouts ── */
+    #roi {
+      max-width: 1000px; margin: 0 auto;
+      padding: 80px 32px;
+    }
+    .roi-eyebrow {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--amber); margin-bottom: 40px;
+    }
+    .roi-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+      margin-bottom: 48px;
+    }
+    .roi-card {
+      background: var(--surface); padding: 36px 28px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .roi-stat {
+      font-size: clamp(2.4rem, 4vw, 3.2rem);
+      font-weight: 900; letter-spacing: -0.04em; color: var(--text);
+      line-height: 1;
+    }
+    .roi-unit {
+      font-size: 0.55em; font-weight: 700; color: var(--amber);
+      vertical-align: super; margin-left: 1px;
+    }
+    .roi-desc {
+      font-size: 0.85rem; color: var(--text); line-height: 1.55; flex: 1;
+    }
+    .roi-source {
+      font-size: 0.7rem; color: var(--dim); font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+    .roi-footer {
+      font-size: 0.95rem; color: var(--muted); line-height: 1.75;
+      max-width: 700px; border-left: 3px solid var(--amber);
+      padding-left: 20px;
+    }
+    @media (max-width: 700px) {
+      .roi-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 460px) {
+      .roi-grid { grid-template-columns: 1fr; }
+    }
+
     /* ── Pilot ── */
     #pilot {
       max-width: 1000px; margin: 0 auto;
@@ -469,6 +516,38 @@
     </div>
   </div>
 </section>
+
+<hr class="divider" />
+
+<!-- ── ROI callouts ── -->
+<section id="roi">
+  <p class="roi-eyebrow reveal">The cost of buried knowledge is well documented</p>
+  <div class="roi-grid reveal">
+    <div class="roi-card">
+      <div class="roi-stat">20<span class="roi-unit">%</span></div>
+      <p class="roi-desc">of the workweek knowledge workers spend searching for and gathering information</p>
+      <p class="roi-source">McKinsey Global Institute</p>
+    </div>
+    <div class="roi-card">
+      <div class="roi-stat">75<span class="roi-unit">%</span></div>
+      <p class="roi-desc">reduction in engineering-modification update time after deploying a knowledge-management system</p>
+      <p class="roi-source">Schlumberger · Wharton / Mack Institute</p>
+    </div>
+    <div class="roi-card">
+      <div class="roi-stat">$650<span class="roi-unit">M</span></div>
+      <p class="roi-desc">in total savings attributed to knowledge-management programs over eight years</p>
+      <p class="roi-source">Chevron · Wharton / Mack Institute</p>
+    </div>
+    <div class="roi-card">
+      <div class="roi-stat">70<span class="roi-unit">%</span></div>
+      <p class="roi-desc">lower search time across roughly two million documents with AI document retrieval</p>
+      <p class="roi-source">AWS · DataStax · Shorthills AI case study</p>
+    </div>
+  </div>
+  <p class="roi-footer reveal">Kataba applies this same economic logic to subsurface teams: reduce search time, prevent duplicated technical work, preserve institutional memory, and make decisions with cited evidence instead of buried knowledge.</p>
+</section>
+
+<hr class="divider" />
 
 <!-- ── Solution ── -->
 <section id="solution">
