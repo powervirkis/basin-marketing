@@ -1,0 +1,5 @@
+node_modules/
+test/screenshots/
+__pycache__/
+*.pyc
+.DS_Store

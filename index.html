@@ -5,67 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kataba</title>
   <meta name="description" content="Your company knows more than it can find. Kataba changes that." />
+  <link rel="canonical" href="https://kataba.ai/" />
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="assets/site.css" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg:       #f9f8f6;
-      --bg2:      #f0ede8;
-      --surface:  #ffffff;
-      --border:   #e5e2dc;
-      --text:     #111010;
-      --muted:    #7a7470;
-      --dim:      #b5b0aa;
-      --amber:    #e8940a;
-      --amber-bg: #fdf3e0;
-      --radius:   10px;
-      --t:        0.2s ease;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    /* ── Nav ── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: rgba(249,248,246,0.9); backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-inner {
-      display: flex; align-items: center; justify-content: space-between;
-      max-width: 1000px; margin: 0 auto; padding: 0 32px; height: 60px;
-    }
-    .logo {
-      display: flex; align-items: center; gap: 9px;
-      font-size: 1.1rem; font-weight: 800; letter-spacing: -0.03em;
-      color: var(--text); text-decoration: none;
-    }
-    .logo-mark {
-      width: 28px; height: 28px;
-      background: var(--amber);
-      border-radius: 7px;
-      display: grid; place-items: center;
-      font-size: 0.72rem; font-weight: 900; color: #fff;
-    }
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      padding: 9px 20px; border-radius: var(--radius); font-weight: 600;
-      font-size: 0.875rem; cursor: pointer; text-decoration: none;
-      transition: all var(--t); border: none;
-    }
-    .btn-primary { background: var(--text); color: var(--bg); }
-    .btn-primary:hover { background: #333; }
-    .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
-    .btn-ghost:hover { border-color: #ccc; color: var(--text); }
-    .btn-lg { padding: 13px 28px; font-size: 0.95rem; border-radius: 12px; }
-
     /* ── Hero ── */
     #hero {
       max-width: 1000px; margin: 0 auto;
@@ -88,12 +31,6 @@
       max-width: 500px; margin-bottom: 40px; line-height: 1.65;
     }
     .hero-ctas { display: flex; gap: 10px; flex-wrap: wrap; }
-
-    /* ── Divider ── */
-    .divider {
-      max-width: 1000px; margin: 0 auto; padding: 0 32px;
-      border: none; border-top: 1px solid var(--border);
-    }
 
     /* ── Pain ── */
     #pain {
@@ -223,93 +160,6 @@
       max-width: 1000px; margin: 0 auto;
       padding: 60px 32px 120px;
     }
-    .cta-inner {
-      background: var(--text); border-radius: 16px;
-      padding: 64px 56px; color: var(--bg);
-      position: relative; overflow: hidden;
-    }
-    .cta-inner h2 {
-      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-      font-weight: 800; letter-spacing: -0.03em; margin-bottom: 16px;
-      color: #fff;
-    }
-    .cta-inner p {
-      font-size: 1rem; color: rgba(255,255,255,0.5);
-      max-width: 400px; margin-bottom: 36px; line-height: 1.65;
-    }
-    .cta-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-    .btn-invert { background: #fff; color: var(--text); }
-    .btn-invert:hover { background: #eee; }
-    .btn-ghost-invert { background: transparent; color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.15); }
-    .btn-ghost-invert:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
-
-    /* ── Brevo form overrides (dark CTA context) ── */
-    .sib-form { text-align: left !important; background: transparent !important; padding: 0 !important; }
-    #sib-form-container { max-width: 420px; }
-    #sib-container {
-      background: transparent !important; border: none !important;
-      border-radius: 0 !important; text-align: left !important;
-      padding: 0 !important; max-width: 420px !important;
-    }
-    #sib-form > div { padding: 5px 0 !important; }
-    .sib-form-block { padding: 0 !important; }
-    .form__label-row { flex-direction: column !important; align-items: flex-start !important; }
-    .entry__label { display: none !important; }
-    .entry__field { width: 100% !important; }
-    #sib-container .input {
-      background: rgba(255,255,255,0.07) !important;
-      border: 1px solid rgba(255,255,255,0.12) !important;
-      border-radius: var(--radius) !important;
-      color: #fff !important; font-size: 0.9rem !important;
-      font-family: inherit !important; padding: 11px 16px !important;
-      width: 100% !important; transition: border-color var(--t) !important;
-    }
-    #sib-container .input:focus { border-color: rgba(255,255,255,0.35) !important; outline: none !important; }
-    #sib-container .input::placeholder { color: rgba(255,255,255,0.28) !important; }
-    .brevo-row { display: flex; gap: 10px; padding: 5px 0; }
-    .brevo-row > div { flex: 1; }
-    .sib-form-block__button {
-      background: #fff !important; color: var(--text) !important;
-      font-family: inherit !important; font-size: 0.9rem !important;
-      font-weight: 700 !important; border-radius: var(--radius) !important;
-      padding: 11px 26px !important; border: none !important;
-      cursor: pointer !important; text-transform: none !important;
-      letter-spacing: 0 !important; transition: background var(--t) !important;
-      margin-top: 4px;
-    }
-    .sib-form-block__button:hover { background: #e5e5e5 !important; }
-    .sib-hide-loader-icon { display: none !important; }
-    .input--hidden { display: none !important; }
-    #success-message, #error-message {
-      display: none;
-      background: transparent !important; border: none !important;
-      border-radius: 0 !important; padding: 0 !important;
-      max-width: 420px !important; margin-bottom: 8px;
-    }
-    #success-message { color: #6ee7b7 !important; }
-    #error-message { color: #f87171 !important; }
-    #success-message .sib-form-message-panel__text,
-    #error-message .sib-form-message-panel__text {
-      background: transparent !important; font-family: inherit !important;
-      font-size: 0.875rem !important; justify-content: flex-start !important;
-    }
-    .sib-notification__icon { display: none !important; }
-    .entry__error { font-family: inherit !important; font-size: 0.75rem !important;
-      background: transparent !important; border: none !important;
-      color: #f87171 !important; padding: 2px 0 !important; }
-    .cta-footer {
-      margin-top: 20px; font-size: 0.8rem; color: rgba(255,255,255,0.35);
-    }
-    .cta-footer a { color: rgba(255,255,255,0.5); text-decoration: underline; }
-    .cta-footer a:hover { color: rgba(255,255,255,0.8); }
-
-    /* ── Footer ── */
-    footer { border-top: 1px solid var(--border); padding: 32px 0; }
-    .footer-inner {
-      display: flex; align-items: center; justify-content: space-between;
-      max-width: 1000px; margin: 0 auto; padding: 0 32px; flex-wrap: wrap; gap: 16px;
-    }
-    .footer-copy { font-size: 0.8rem; color: var(--dim); }
 
     /* ── Responsive ── */
     @media (max-width: 700px) {
@@ -453,22 +303,34 @@
       #origin, .solution-body { grid-template-columns: 1fr; }
     }
 
-    .js-ready .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
-    .js-ready .reveal.visible { opacity: 1; transform: none; }
+    /* ── UGS homepage module ── */
+    #ugs-feature {
+      max-width: 1000px; margin: 0 auto;
+      padding: 80px 32px;
+    }
+    #ugs-feature .eyebrow { display: block; margin-bottom: 16px; }
+    #ugs-feature .solution-headline { max-width: 640px; }
+    #ugs-feature .solution-sub { max-width: 640px; }
   </style>
 </head>
 <body>
 
-<nav>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<nav class="site-nav">
   <div class="nav-inner">
-    <a href="#" class="logo">
+    <a href="/" class="logo">
       <div class="logo-mark">K</div>
       Kataba
     </a>
-    <a href="#cta" class="btn btn-primary">Discuss a Pilot</a>
+    <div class="nav-links">
+      <a href="/ugs" class="nav-link">UGS</a>
+      <a href="#cta" class="btn btn-primary">Discuss a Pilot</a>
+    </div>
   </div>
 </nav>
 
+<main id="main">
 <!-- ── Hero ── -->
 <section id="hero">
   <h1>Your company knows<br/>more than it<br/><em>can find.</em></h1>
@@ -647,6 +509,16 @@
 
 <hr class="divider" />
 
+<!-- ── UGS feature module ── -->
+<section id="ugs-feature">
+  <p class="eyebrow reveal">Underground Natural Gas Storage</p>
+  <h2 class="solution-headline reveal">Procedure gap analysis for API RP 1170 and 1171</h2>
+  <p class="solution-sub reveal">Kataba helps UGS teams trace applicable requirements into operating procedures and supporting records, identify gaps and outdated evidence, and prepare a reviewable package for engineering and compliance approval.</p>
+  <a href="/ugs" class="btn btn-primary btn-lg reveal" id="homepage-ugs-cta">Explore Kataba for UGS</a>
+</section>
+
+<hr class="divider" />
+
 <!-- ── Team credibility ── -->
 <section id="team">
   <div class="team-inner reveal">
@@ -746,27 +618,32 @@
   </div>
 </section>
 
+</main>
+
 <footer>
   <div class="footer-inner">
-    <a href="#" class="logo" style="text-decoration:none;">
+    <a href="/" class="logo" style="text-decoration:none;">
       <div class="logo-mark">K</div>
       <span style="font-weight:800;font-size:0.95rem;letter-spacing:-0.02em;color:var(--text);">Kataba</span>
     </a>
     <span class="footer-copy">AI knowledge retrieval for geoscience, subsurface, and technical energy teams.</span>
+    <nav class="footer-links" aria-label="Footer">
+      <a href="/ugs">UGS Solution</a>
+      <a href="mailto:hello@kataba.ai">Contact</a>
+    </nav>
   </div>
+  <p class="footer-disclaimer">Kataba supports technical evidence review and does not provide legal advice or make autonomous regulatory-compliance determinations.</p>
 </footer>
 
+<script src="assets/site.js"></script>
 <script>
-  document.documentElement.classList.add('js-ready');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+  // ── Homepage UGS module entry-point tracking ───────────────────────────────
+  const homepageUgsCta = document.getElementById('homepage-ugs-cta');
+  if (homepageUgsCta) {
+    homepageUgsCta.addEventListener('click', () => {
+      window.kataba && window.kataba.track('homepage_ugs_module_click');
     });
-  }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
-  document.querySelectorAll('.reveal').forEach((el, i) => {
-    el.style.transitionDelay = `${(i % 4) * 0.07}s`;
-    observer.observe(el);
-  });
+  }
 
   // ── Brevo form ───────────────────────────────────────────────────────────
   const sibForm    = document.getElementById('sib-form');

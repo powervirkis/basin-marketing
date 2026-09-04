@@ -1,5 +1,6 @@
 import os
 import json
+import urllib.parse
 import urllib.request
 import urllib.error
 import http.server
@@ -17,6 +18,28 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
     def log_message(self, fmt, *args):
         pass
+
+    # ── Clean-URL routing (e.g. /ugs -> /ugs/index.html, no redirect) ───────
+    # Keeps canonical/nav links pointing at the extension-less path (/ugs)
+    # returning a direct 200 instead of relying on the default 301
+    # directory-slash redirect that http.server would otherwise issue.
+    CLEAN_ROUTES = {
+        "/ugs": "/ugs/index.html",
+    }
+
+    def _rewrite_clean_path(self):
+        parsed = urllib.parse.urlsplit(self.path)
+        target = self.CLEAN_ROUTES.get(parsed.path)
+        if target:
+            self.path = urllib.parse.urlunsplit(("", "", target, parsed.query, parsed.fragment))
+
+    def do_GET(self):
+        self._rewrite_clean_path()
+        super().do_GET()
+
+    def do_HEAD(self):
+        self._rewrite_clean_path()
+        super().do_HEAD()
 
     # ── POST /subscribe ─────────────────────────────────────────────────────
     def do_POST(self):

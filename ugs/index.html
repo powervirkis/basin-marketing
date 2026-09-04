@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API RP 1170/1171 Procedure Gap Analysis for UGS | Kataba</title>
+  <meta name="description" content="Kataba helps underground natural gas storage teams compare O&amp;M procedures with API RP 1170/1171, trace evidence, and identify gaps before expert review." />
+  <link rel="canonical" href="https://kataba.ai/ugs" />
+  <link rel="icon" href="data:," />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://kataba.ai/ugs" />
+  <meta property="og:title" content="API RP 1170/1171 Procedure Gap Analysis for UGS | Kataba" />
+  <meta property="og:description" content="Kataba helps underground natural gas storage teams compare O&amp;M procedures with API RP 1170/1171, trace evidence, and identify gaps before expert review." />
+  <meta property="og:image" content="https://kataba.ai/assets/ugs-og.png" />
+  <meta property="og:image:width" content="1280" />
+  <meta property="og:image:height" content="720" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="API RP 1170/1171 Procedure Gap Analysis for UGS | Kataba" />
+  <meta name="twitter:description" content="Kataba helps underground natural gas storage teams compare O&amp;M procedures with API RP 1170/1171, trace evidence, and identify gaps before expert review." />
+  <meta name="twitter:image" content="https://kataba.ai/assets/ugs-og.png" />
+
+  <link rel="stylesheet" href="/assets/site.css" />
+  <style>
+    /* ── UGS Hero ── */
+    #ugs-hero {
+      max-width: 1000px; margin: 0 auto;
+      padding: 140px 32px 56px;
+    }
+    #ugs-hero .eyebrow { display: block; margin-bottom: 16px; }
+    #ugs-hero h1 {
+      font-size: clamp(2.4rem, 5.4vw, 4.2rem);
+      font-weight: 900; line-height: 1.08; letter-spacing: -0.04em;
+      max-width: 760px; margin-bottom: 24px;
+    }
+    .ugs-hero-sub {
+      font-size: 1.15rem; color: var(--muted);
+      max-width: 620px; margin-bottom: 36px; line-height: 1.65;
+    }
+    .ugs-hero-ctas { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .ugs-trust-line {
+      font-size: 0.82rem; color: var(--muted); max-width: 620px; line-height: 1.6;
+      border-left: 3px solid var(--amber); padding-left: 14px;
+    }
+
+    /* ── Shared section rhythm ── */
+    .ugs-section { max-width: 1000px; margin: 0 auto; padding: 80px 32px; }
+    .ugs-section-head { max-width: 700px; margin-bottom: 40px; }
+    .ugs-section-head .eyebrow { display: block; margin-bottom: 16px; }
+    .ugs-h2 {
+      font-size: clamp(1.6rem, 3.4vw, 2.5rem);
+      font-weight: 800; line-height: 1.2; letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+    .ugs-copy { font-size: 1rem; color: var(--muted); line-height: 1.75; max-width: 680px; }
+
+    /* ── Regulatory context cards ── */
+    .reg-cards {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      background: var(--border); border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden; margin-top: 8px;
+    }
+    .reg-card { background: var(--surface); padding: 32px 28px; }
+    .reg-card h3 {
+      font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    .reg-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+    .reg-sources {
+      margin-top: 28px; font-size: 0.8rem; color: var(--muted); line-height: 1.8;
+    }
+    .reg-sources a { color: var(--muted); text-decoration: underline; }
+    .reg-sources a:hover { color: var(--text); }
+    .reg-sources ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+
+    /* ── Differentiator comparison ── */
+    .compare-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 40px;
+    }
+    .compare-col {
+      border: 1px solid var(--border); border-radius: 14px; padding: 28px 26px;
+      background: var(--surface);
+    }
+    .compare-col.is-kataba { border-color: var(--amber); background: var(--amber-bg); }
+    .compare-col h3 {
+      font-size: 0.95rem; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 18px;
+    }
+    .compare-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .compare-col li {
+      font-size: 0.9rem; color: var(--text); line-height: 1.55;
+      padding-left: 18px; position: relative;
+    }
+    .compare-col li::before {
+      content: '–'; position: absolute; left: 0; color: var(--dim);
+    }
+    .compare-col.is-kataba li::before { content: '✓'; color: var(--amber); font-weight: 700; }
+    .compare-col code {
+      font-family: 'Cascadia Code', 'Fira Code', monospace; font-size: 0.82em;
+      background: rgba(17,16,16,0.06); padding: 1px 5px; border-radius: 4px;
+    }
+    .compare-statement {
+      margin-top: 36px; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.015em;
+      line-height: 1.5; max-width: 720px; border-left: 3px solid var(--amber);
+      padding-left: 20px; color: var(--text);
+    }
+
+    /* ── Workflow steps ── */
+    .workflow-steps {
+      display: flex; flex-direction: column; margin-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+    .workflow-step {
+      display: grid; grid-template-columns: 64px 1fr; gap: 20px;
+      padding: 28px 0; border-bottom: 1px solid var(--border);
+    }
+    .workflow-step-num {
+      font-size: 0.75rem; font-weight: 700; color: var(--dim);
+      letter-spacing: 0.08em; padding-top: 3px;
+    }
+    .workflow-step h3 {
+      font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em;
+    }
+    .workflow-step p { font-size: 0.9rem; color: var(--muted); line-height: 1.65; max-width: 620px; }
+    .workflow-note {
+      font-size: 0.82rem; color: var(--muted); margin-top: 10px; line-height: 1.6;
+      max-width: 620px;
+    }
+    .workflow-hybrid {
+      margin-top: 28px; font-size: 0.9rem; color: var(--muted); line-height: 1.7;
+      max-width: 700px;
+    }
+
+    /* ── Sample deliverable table ── */
+    .sample-table-label {
+      font-size: 0.8rem; color: var(--muted); font-style: italic; margin-bottom: 16px;
+    }
+    .sample-table-wrapper {
+      overflow-x: auto; border: 1px solid var(--border); border-radius: 12px;
+      margin-top: 8px;
+    }
+    table.sample-table {
+      width: 100%; border-collapse: collapse; min-width: 860px; font-size: 0.82rem;
+    }
+    table.sample-table caption { text-align: left; padding: 14px 18px; }
+    table.sample-table th, table.sample-table td {
+      text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--border);
+      vertical-align: top; line-height: 1.5;
+    }
+    table.sample-table thead th {
+      background: var(--bg2); font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.04em; text-transform: uppercase; color: #6a6665;
+      white-space: nowrap;
+    }
+    table.sample-table tbody tr:last-child td { border-bottom: none; }
+    table.sample-table tbody tr:hover { background: rgba(232,148,10,0.05); }
+    .status-pill {
+      display: inline-flex; align-items: center; padding: 3px 10px;
+      border-radius: 999px; font-size: 0.72rem; font-weight: 700;
+      white-space: nowrap;
+    }
+    .status-covered { background: #e7f5ea; color: #1e7a34; }
+    .status-partial { background: var(--amber-bg); color: #a15f04; }
+    .status-unsupported { background: #fbe9e9; color: #b3261e; }
+    .status-conflict { background: #fbe9e9; color: #b3261e; }
+    .status-review { background: #eceaf7; color: #4c3fb0; }
+    .poc-deliverables {
+      margin-top: 36px; list-style: none; display: grid;
+      grid-template-columns: 1fr 1fr; gap: 12px 32px;
+    }
+    .poc-deliverables li {
+      font-size: 0.9rem; color: var(--text); padding-left: 18px; position: relative;
+      line-height: 1.5;
+    }
+    .poc-deliverables li::before { content: '—'; position: absolute; left: 0; color: var(--dim); }
+
+    /* ── Use case cards ── */
+    .usecase-cards {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+      background: var(--border); border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden; margin-top: 8px;
+    }
+    .usecase-card { background: var(--surface); padding: 32px 26px; position: relative; }
+    .usecase-tag {
+      display: inline-block; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.08em;
+      color: var(--text); background: var(--amber); padding: 4px 9px; border-radius: 5px;
+      margin-bottom: 16px;
+    }
+    .usecase-card h3 {
+      font-size: 1rem; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.01em;
+      min-height: 48px;
+    }
+    .usecase-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── Security / deployment ── */
+    .security-list {
+      list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 28px;
+      max-width: 680px;
+    }
+    .security-list li {
+      font-size: 0.9rem; color: var(--text); padding-left: 18px; position: relative; line-height: 1.55;
+    }
+    .security-list li::before { content: '—'; position: absolute; left: 0; color: var(--dim); }
+    .security-note {
+      margin-top: 24px; font-size: 0.82rem; color: var(--muted); line-height: 1.7; max-width: 680px;
+    }
+
+    /* ── POC section ── */
+    .poc-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-top: 36px;
+    }
+    .poc-col {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 26px 24px;
+    }
+    .poc-col-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--amber); margin-bottom: 16px;
+    }
+    .poc-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .poc-list li {
+      font-size: 0.85rem; color: var(--muted); padding-left: 18px; position: relative; line-height: 1.5;
+    }
+    .poc-list li::before { content: '—'; position: absolute; left: 0; color: var(--dim); }
+    .poc-clarification {
+      margin-top: 28px; font-size: 0.88rem; color: var(--muted); line-height: 1.7;
+      max-width: 680px; border-left: 3px solid var(--amber); padding-left: 18px;
+    }
+
+    /* ── Lead form ── */
+    #ugs-lead-form { max-width: 1000px; margin: 0 auto; padding: 20px 32px 100px; }
+    .ugs-form-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: start; }
+    .ugs-form-intro-copy { color: rgba(255,255,255,0.5); font-size: 1rem; line-height: 1.7; max-width: 380px; }
+    .form-error-text {
+      display: block; min-height: 1.1em; font-size: 0.75rem; color: #f87171; margin-top: 4px;
+    }
+    @media (max-width: 800px) {
+      .ugs-form-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── FAQ ── */
+    .faq-list { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--border); margin-top: 8px; }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-item summary {
+      cursor: pointer; padding: 22px 4px; font-size: 1rem; font-weight: 700;
+      letter-spacing: -0.01em; list-style: none; display: flex;
+      justify-content: space-between; align-items: center; gap: 16px;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary .faq-icon {
+      flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+      border: 1px solid var(--border); display: grid; place-items: center;
+      font-size: 0.85rem; color: var(--muted); transition: transform var(--t);
+    }
+    .faq-item[open] summary .faq-icon { transform: rotate(45deg); }
+    .faq-item p {
+      padding: 0 4px 22px; font-size: 0.9rem; color: var(--muted); line-height: 1.7; max-width: 700px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 760px) {
+      .reg-cards, .compare-grid, .usecase-cards, .poc-grid { grid-template-columns: 1fr; }
+      .poc-deliverables { grid-template-columns: 1fr; }
+      .workflow-step { grid-template-columns: 44px 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="/" class="logo">
+      <div class="logo-mark">K</div>
+      Kataba
+    </a>
+    <div class="nav-links">
+      <a href="/" class="nav-link">Home</a>
+      <a href="/ugs" class="nav-link" aria-current="page">UGS</a>
+      <a href="#ugs-lead-form" class="btn btn-primary" id="nav-ugs-cta">Scope a UGS POC</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+
+<!-- ── Hero ── -->
+<section id="ugs-hero">
+  <p class="eyebrow reveal">Underground Natural Gas Storage Evidence Assurance</p>
+  <h1 class="reveal">Verify your UGS procedures against API&nbsp;RP&nbsp;1170 and API&nbsp;RP&nbsp;1171.</h1>
+  <p class="ugs-hero-sub reveal">Kataba helps storage operators compare current O&amp;M procedures with applicable requirements, trace every finding to its source, and identify missing, conflicting, or outdated evidence before expert approval.</p>
+  <div class="ugs-hero-ctas reveal">
+    <a href="#ugs-lead-form" class="btn btn-primary btn-lg" id="ugs-primary-cta">Scope a bounded UGS POC</a>
+    <a href="#ugs-sample" class="btn btn-ghost btn-lg" id="ugs-secondary-cta">View a sample gap matrix</a>
+  </div>
+  <p class="ugs-trust-line reveal">Limited corpus. Pre-agreed deliverables. Human review. No autonomous compliance decisions.</p>
+</section>
+
+<hr class="divider" />
+
+<!-- ── Regulatory context ── -->
+<section id="ugs-regulatory" class="ugs-section">
+  <div class="ugs-section-head">
+    <h2 class="ugs-h2 reveal">Updated standards. Existing procedures. One difficult question: what changed, and did we cover it?</h2>
+    <p class="ugs-copy reveal">PHMSA incorporated the second editions of API&nbsp;RP&nbsp;1170 and API&nbsp;RP&nbsp;1171 into 49&nbsp;CFR&nbsp;Part&nbsp;192, effective January&nbsp;1,&nbsp;2026. For operators, the work extends beyond reading the standards. Applicable requirements must be traced into procedures, responsibilities, records, and evidence.</p>
+  </div>
+  <div class="reg-cards reveal">
+    <div class="reg-card">
+      <h3>API RP 1170</h3>
+      <p>Design and operation of solution-mined salt caverns used for natural gas storage.</p>
+    </div>
+    <div class="reg-card">
+      <h3>API RP 1171</h3>
+      <p>Functional integrity of natural gas storage in depleted hydrocarbon and aquifer reservoirs.</p>
+    </div>
+  </div>
+  <div class="reg-sources reveal">
+    <p style="margin-bottom:10px;">Sources:</p>
+    <ul>
+      <li><a href="https://www.phmsa.dot.gov/regulations/federal-register-documents/2025-19340" target="_blank" rel="noopener noreferrer">PHMSA Federal Register notice incorporating API RP 1170 and API RP 1171 into 49 CFR Part 192 (phmsa.dot.gov)</a></li>
+      <li><a href="https://www.ecfr.gov/current/title-49/subtitle-B/chapter-I/subchapter-D/part-192/subpart-A/section-192.12" target="_blank" rel="noopener noreferrer">49 CFR § 192.12 — incorporation by reference, current eCFR text (ecfr.gov)</a></li>
+      <li><a href="https://www.api.org/products-and-services/standards/important-standards-announcements/pressrelease-rp11701171" target="_blank" rel="noopener noreferrer">API announcement on RP 1170 and RP 1171 (api.org)</a></li>
+    </ul>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── Differentiated problem ── -->
+<section id="ugs-differentiator" class="ugs-section">
+  <div class="ugs-section-head">
+    <h2 class="ugs-h2 reveal">A cited answer can still miss the record that matters.</h2>
+    <p class="ugs-copy reveal">General-purpose search and RAG answer from the material they retrieve. A citation shows that an answer has support, but it does not prove that the complete evidence set was considered.</p>
+  </div>
+  <div class="compare-grid reveal">
+    <div class="compare-col">
+      <h3>General document AI</h3>
+      <ul>
+        <li>Retrieves passages related to the question</li>
+        <li>Produces an answer from what it found</li>
+        <li>Cites the returned text</li>
+        <li>May not reveal that another required record was never retrieved</li>
+      </ul>
+    </div>
+    <div class="compare-col is-kataba">
+      <h3>Kataba UGS evidence workflow</h3>
+      <ul>
+        <li>Begins with the evidence expected for the UGS question</li>
+        <li>Accounts for each required procedure, limit, record, response, and version</li>
+        <li>Separately identifies present, missing, stale, and conflicting evidence</li>
+        <li>Returns <code>INSUFFICIENT EVIDENCE</code> when the available record cannot support a clean conclusion</li>
+        <li>Routes the result to the responsible expert for review</li>
+      </ul>
+    </div>
+  </div>
+  <p class="compare-statement reveal">A citation demonstrates support. Kataba tests whether the available evidence is complete enough for an expert to rely on.</p>
+</section>
+
+<hr class="divider" />
+
+<!-- ── Workflow ── -->
+<section id="ugs-workflow" class="ugs-section">
+  <div class="ugs-section-head">
+    <h2 class="ugs-h2 reveal">From fragmented records to a reviewable UGS evidence package.</h2>
+  </div>
+  <div class="workflow-steps reveal">
+    <div class="workflow-step">
+      <div class="workflow-step-num">01</div>
+      <div>
+        <h3>Assemble the authorized corpus</h3>
+        <p>Bring together licensed standards supplied by the customer, O&amp;M procedures, integrity-management documents, inspection records, well files, approved database exports, and other relevant evidence.</p>
+      </div>
+    </div>
+    <div class="workflow-step">
+      <div class="workflow-step-num">02</div>
+      <div>
+        <h3>Recover legacy information</h3>
+        <p>Use OCR, table extraction, and handwriting recognition to make scanned reports, historical well files, forms, maps, and handwritten records searchable.</p>
+        <p class="workflow-note">Low-confidence extractions remain linked to the original page and are flagged for human verification.</p>
+      </div>
+    </div>
+    <div class="workflow-step">
+      <div class="workflow-step-num">03</div>
+      <div>
+        <h3>Map requirements to evidence</h3>
+        <p>Connect each customer-defined requirement or review question to the applicable procedure, document version, operating limit, record, and supporting source.</p>
+      </div>
+    </div>
+    <div class="workflow-step">
+      <div class="workflow-step-num">04</div>
+      <div>
+        <h3>Review the exceptions</h3>
+        <p>Present missing evidence, partial coverage, conflicting values, stale versions, and unresolved interpretations for expert disposition.</p>
+      </div>
+    </div>
+  </div>
+  <p class="workflow-hybrid reveal">Kataba combines semantic/vector retrieval with exact keyword search so technical concepts, identifiers, well names, document references, and exact terminology can all be found.</p>
+</section>
+
+<hr class="divider" />
+
+<!-- ── Sample deliverable ── -->
+<section id="ugs-sample" class="ugs-section">
+  <div class="ugs-section-head">
+    <h2 class="ugs-h2 reveal">The output is a gap matrix, not another chatbot transcript.</h2>
+  </div>
+  <p class="sample-table-label reveal">Illustrative output — not an assessment of any actual operator or facility.</p>
+  <div class="sample-table-wrapper reveal" tabindex="0" role="region" aria-label="Illustrative API RP 1170/1171 procedure gap matrix, scrollable horizontally">
+    <table class="sample-table">
+      <caption class="visually-hidden">Illustrative API RP 1170/1171 procedure gap matrix using fictional identifiers</caption>
+      <thead>
+        <tr>
+          <th scope="col">Requirement reference</th>
+          <th scope="col">Procedure coverage</th>
+          <th scope="col">Procedure citation</th>
+          <th scope="col">Supporting evidence</th>
+          <th scope="col">Gap or conflict</th>
+          <th scope="col">Reviewer status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>UGS-1171-R014 <em>(illustrative)</em></td>
+          <td>Covered</td>
+          <td>OM&#8209;Manual&#8209;114, §6.3, Rev. 2024&#8209;03</td>
+          <td>Pressure-monitoring log, Well Pad&nbsp;7, 2023–2025</td>
+          <td>None identified</td>
+          <td><span class="status-pill status-covered">Covered</span></td>
+        </tr>
+        <tr>
+          <td>UGS-1170-R022 <em>(illustrative)</em></td>
+          <td>Partially covered</td>
+          <td>Cavern&#8209;Integrity&#8209;SOP&#8209;08, §3.1, Rev. 2021&#8209;11</td>
+          <td>Mechanical integrity test results, Cavern&nbsp;C&#8209;3, 2022</td>
+          <td>Referenced interval test not repeated after 2022 workover</td>
+          <td><span class="status-pill status-partial">Partially covered</span></td>
+        </tr>
+        <tr>
+          <td>UGS-1171-R031 <em>(illustrative)</em></td>
+          <td>Unsupported</td>
+          <td>Emergency&#8209;Response&#8209;Plan&#8209;02, §5, Rev. 2019&#8209;06</td>
+          <td>No drill record located for named facility</td>
+          <td>Required response-drill frequency not evidenced</td>
+          <td><span class="status-pill status-unsupported">Unsupported</span></td>
+        </tr>
+        <tr>
+          <td>UGS-1170-R040 <em>(illustrative)</em></td>
+          <td>Conflicting evidence</td>
+          <td>Wellhead&#8209;Monitoring&#8209;SOP&#8209;11, §4.4, Rev. 2020&#8209;02; Facility&#8209;Handbook&#8209;03, §2.9, Rev. 2023&#8209;08</td>
+          <td>Two procedures specify different pressure thresholds</td>
+          <td>Threshold values do not match between documents</td>
+          <td><span class="status-pill status-conflict">Conflicting evidence</span></td>
+        </tr>
+        <tr>
+          <td>UGS-1171-R052 <em>(illustrative)</em></td>
+          <td>Review required</td>
+          <td>Corrosion&#8209;Monitoring&#8209;Plan&#8209;05, §7.2, Rev. 2022&#8209;09</td>
+          <td>Inspection log referenced but not located in corpus</td>
+          <td>Cited record could not be verified in available evidence</td>
+          <td><span class="status-pill status-review">Review required</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ul class="poc-deliverables reveal">
+    <li>Requirement-to-procedure crosswalk</li>
+    <li>Exact source citations</li>
+    <li>Missing and conflicting evidence log</li>
+    <li>Document-version analysis</li>
+    <li>Reviewer comments and disposition</li>
+    <li>Exportable evidence package</li>
+  </ul>
+</section>
+
+<hr class="divider" />
+
+<!-- ── Use cases ── -->
+<section id="ugs-use-cases" class="ugs-section">
+  <div class="ugs-section-head">
+    <h2 class="ugs-h2 reveal">Start with one defined workflow.</h2>
+  </div>
+  <div class="usecase-cards reveal">
+    <div class="usecase-card">
+      <span class="usecase-tag">Recommended first POC</span>
+      <h3>API RP 1170/1171 procedure gap analysis</h3>
+      <p>Compare applicable requirements with current procedures and identify covered, partial, ambiguous, or unsupported areas.</p>
+    </div>
+    <div class="usecase-card">
+      <h3 style="min-height:auto;margin-top:6px;">Acquisition and legacy-field evidence assessment</h3>
+      <p>Recover and organize historical well, plugging, completion, integrity, and operating information from databases, scanned files, and handwritten records.</p>
+    </div>
+    <div class="usecase-card">
+      <h3 style="min-height:auto;margin-top:6px;">Audit and inspection evidence assembly</h3>
+      <p>Connect inspection questions to applicable procedures, operating limits, monitoring records, responses, and source evidence.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── Deployment & security ──
+     [VERIFY WITH VLAD] The specific bullet items below (on-prem, private-cloud/VPC,
+     database connectors, SSO, RBAC, audit logging, encryption, model-hosting,
+     data-retention controls) are presented as topics scoped per engagement, not as
+     asserted current capabilities, because they have not been confirmed. Before
+     publishing firmer claims, confirm with Vlad exactly what is available today vs.
+     what is roadmap, and do not publish SOC 2 / ISO 27001 / pen-test / data-residency
+     guarantees without evidence. -->
+<section id="ugs-security" class="ugs-section">
+  <div class="ugs-section-head">
+    <h2 class="ugs-h2 reveal">Designed for the operator’s security boundary.</h2>
+    <p class="ugs-copy reveal">Kataba can be configured for a controlled deployment in which document access, model access, user permissions, and integrations are aligned with the operator’s IT and cybersecurity requirements.</p>
+  </div>
+  <ul class="security-list reveal">
+    <li>Deployment boundary — cloud, private-cloud, or on-premises — scoped to the operator's environment</li>
+    <li>Document and model access scoped to named reviewers</li>
+    <li>Integration and connector needs assessed against the operator's existing systems</li>
+    <li>Access control, logging, and encryption requirements reviewed with the operator's IT and security teams</li>
+    <li>Data-retention terms agreed before any corpus is loaded</li>
+  </ul>
+  <p class="security-note reveal">Specific deployment, access-control, and infrastructure options are confirmed with each operator during scoping and are not represented here as pre-built, universally available features.</p>
+</section>
+
+<hr class="divider" />
+
+<!-- ── Bounded POC ── -->
+<section id="ugs-poc" class="ugs-section">
+  <div class="ugs-section-head">
+    <h2 class="ugs-h2 reveal">Prove the workflow on one bounded matter.</h2>
+    <p class="ugs-copy reveal">The first engagement is deliberately limited so the operator can evaluate accuracy, usefulness, security, and reviewer acceptance before considering broader deployment.</p>
+  </div>
+  <div class="poc-grid reveal">
+    <div class="poc-col">
+      <p class="poc-col-label">Proposed scope</p>
+      <ul class="poc-list">
+        <li>One procedure family or completed historical workflow</li>
+        <li>One facility or operating entity</li>
+        <li>Limited, approved corpus</li>
+        <li>Predefined requirements or 10–15 review questions</li>
+        <li>Named operator reviewers</li>
+        <li>No production write access</li>
+      </ul>
+    </div>
+    <div class="poc-col">
+      <p class="poc-col-label">Deliverables</p>
+      <ul class="poc-list">
+        <li>Source-linked gap matrix</li>
+        <li>Coverage and insufficiency classifications</li>
+        <li>Missing, stale, and conflicting evidence log</li>
+        <li>Reviewer-ready findings package</li>
+        <li>Recommendations for a broader deployment, if justified</li>
+      </ul>
+    </div>
+    <div class="poc-col">
+      <p class="poc-col-label">Acceptance criteria agreed before work begins</p>
+      <ul class="poc-list">
+        <li>Required-record or requirement recall</li>
+        <li>Citation accuracy</li>
+        <li>Correct document-version identification</li>
+        <li>Unsupported or false-clean conclusions</li>
+        <li>Reviewer acceptance</li>
+        <li>Evidence-assembly time compared with the current process</li>
+      </ul>
+    </div>
+  </div>
+  <p class="poc-clarification reveal">Acceptance thresholds are agreed with the operator. They are POC targets, not claims of previously proven performance.</p>
+  <!-- [VERIFY WITH VLAD] The homepage's general geoscience pilot references a
+       "4–6 week" duration. A regulatory procedure gap-analysis POC likely has a
+       different scope/timeline; no duration is asserted here until confirmed
+       realistic for this specific workflow. -->
+  <div style="margin-top:36px;" class="reveal">
+    <a href="#ugs-lead-form" class="btn btn-primary btn-lg" id="ugs-poc-cta">Discuss a bounded UGS POC</a>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── Lead form ── -->
+<section id="ugs-lead-form">
+  <div class="cta-inner reveal">
+    <div class="ugs-form-grid">
+      <div>
+        <h2>Choose one UGS workflow worth testing.</h2>
+        <p class="ugs-form-intro-copy">Tell us which procedure, facility, acquired asset, or historical evidence problem would make a useful bounded evaluation.</p>
+      </div>
+      <div id="ugs-form-container">
+        <div id="ugs-error-message" class="sib-form-message-panel" aria-hidden="true" aria-live="polite">
+          <div class="sib-form-message-panel__text sib-form-message-panel__text--center">
+            <span class="sib-form-message-panel__inner-text">Your submission could not be sent. Please try again.</span>
+          </div>
+        </div>
+        <div id="ugs-success-message" class="sib-form-message-panel" aria-hidden="true" aria-live="polite">
+          <div class="sib-form-message-panel__text sib-form-message-panel__text--center">
+            <span class="sib-form-message-panel__inner-text">Thank you. We will contact you to schedule a short technical scoping discussion.</span>
+          </div>
+        </div>
+        <div id="ugs-sib-container">
+          <!--
+            Reuses the same working Brevo embedded-form endpoint/account as the
+            homepage form (see index.html #cta) so this integration is proven to
+            work rather than untested. [VERIFY WITH VLAD]: confirm whether this
+            should point at a dedicated UGS Brevo form/list instead, and confirm
+            the custom attributes below (USE_CASE, LEAD_SOURCE, PROJECT_DESCRIPTION,
+            UTM_*, REFERRER_URL) exist as contact attributes in Brevo so this data
+            is actually captured server-side rather than silently dropped.
+          -->
+          <form id="ugs-form" method="POST" action="https://0199293e.sibforms.com/v2/serve/MUIFAMUBbuCPTqP9vrwCnKtIkHBY7hZRqPQGhm34djRMI_AXHmskPn1lgZsDPtAITaYWHg5kE2f0T2z8kHs5W5mmqKX-FFhTx5-f1sTNW32SFMjGwtsKCteg1lgSPdgePT8BuGNajexeRbJh3-qBc4OtKQ-LFPCSvGqwxri-WJWO5i1IGbVQpbrhVSU0EaIQP-VXp_3t2k-edp-g" data-type="subscription" novalidate>
+            <div class="brevo-row">
+              <div class="sib-input sib-form-block">
+                <div class="form__entry entry_block">
+                  <div class="form__label-row">
+                    <div class="entry__field">
+                      <label for="ugs-FIRSTNAME" class="visually-hidden">First name</label>
+                      <input class="input" maxlength="200" type="text" id="ugs-FIRSTNAME" name="FIRSTNAME" autocomplete="given-name" placeholder="First name *" data-required="true" required />
+                    </div>
+                  </div>
+                  <span class="form-error-text" id="err-FIRSTNAME"></span>
+                </div>
+              </div>
+              <div class="sib-input sib-form-block">
+                <div class="form__entry entry_block">
+                  <div class="form__label-row">
+                    <div class="entry__field">
+                      <label for="ugs-LASTNAME" class="visually-hidden">Last name</label>
+                      <input class="input" maxlength="200" type="text" id="ugs-LASTNAME" name="LASTNAME" autocomplete="family-name" placeholder="Last name *" data-required="true" required />
+                    </div>
+                  </div>
+                  <span class="form-error-text" id="err-LASTNAME"></span>
+                </div>
+              </div>
+            </div>
+            <div class="sib-input sib-form-block">
+              <div class="form__entry entry_block">
+                <div class="form__label-row">
+                  <div class="entry__field">
+                    <label for="ugs-COMPANY" class="visually-hidden">Company</label>
+                    <input class="input" maxlength="200" type="text" id="ugs-COMPANY" name="COMPANY:name" autocomplete="organization" placeholder="Company *" data-required="true" required />
+                  </div>
+                </div>
+                <span class="form-error-text" id="err-COMPANY"></span>
+              </div>
+            </div>
+            <div class="sib-input sib-form-block">
+              <div class="form__entry entry_block">
+                <div class="form__label-row">
+                  <div class="entry__field">
+                    <label for="ugs-EMAIL" class="visually-hidden">Work email</label>
+                    <input class="input" type="email" id="ugs-EMAIL" name="EMAIL" autocomplete="email" placeholder="Work email *" data-required="true" required />
+                  </div>
+                </div>
+                <span class="form-error-text" id="err-EMAIL"></span>
+              </div>
+            </div>
+            <div class="sib-input sib-form-block">
+              <div class="form__entry entry_block">
+                <div class="form__label-row">
+                  <div class="entry__field">
+                    <label for="ugs-USE-CASE" class="visually-hidden">Primary use case</label>
+                    <select class="input" id="ugs-USE-CASE" name="USE_CASE" data-required="true" required>
+                      <option value="" disabled selected>Primary use case *</option>
+                      <option value="API RP 1170/1171 procedure gap analysis">API RP 1170/1171 procedure gap analysis</option>
+                      <option value="Acquisition or legacy-field evidence">Acquisition or legacy-field evidence</option>
+                      <option value="Audit or inspection evidence">Audit or inspection evidence</option>
+                      <option value="Other UGS workflow">Other UGS workflow</option>
+                    </select>
+                  </div>
+                </div>
+                <span class="form-error-text" id="err-USE-CASE"></span>
+              </div>
+            </div>
+            <div class="sib-input sib-form-block">
+              <div class="form__entry entry_block">
+                <div class="form__label-row">
+                  <div class="entry__field">
+                    <label for="ugs-MESSAGE" class="visually-hidden">Briefly describe the workflow or records involved</label>
+                    <textarea class="input" id="ugs-MESSAGE" name="PROJECT_DESCRIPTION" rows="3" placeholder="Briefly describe the workflow or records involved (optional)"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lead-source + attribution (hidden; no document/PII content) -->
+            <input type="hidden" name="LEAD_SOURCE" value="UGS landing page" />
+            <input type="hidden" id="ugs-utm-source" name="UTM_SOURCE" value="" />
+            <input type="hidden" id="ugs-utm-medium" name="UTM_MEDIUM" value="" />
+            <input type="hidden" id="ugs-utm-campaign" name="UTM_CAMPAIGN" value="" />
+            <input type="hidden" id="ugs-utm-term" name="UTM_TERM" value="" />
+            <input type="hidden" id="ugs-utm-content" name="UTM_CONTENT" value="" />
+            <input type="hidden" id="ugs-referrer" name="REFERRER_URL" value="" />
+            <input type="text" name="email_address_check" value="" class="input--hidden" tabindex="-1" autocomplete="off" />
+            <input type="hidden" name="locale" value="en" />
+
+            <div class="sib-form-block">
+              <button class="sib-form-block__button" type="submit">
+                <svg class="sib-hide-loader-icon" width="14" height="14" viewBox="0 0 512 512" fill="currentColor"><path d="M460.116 373.846l-20.823-12.022c-5.541-3.199-7.54-10.159-4.663-15.874 30.137-59.886 28.343-131.652-5.386-189.946-33.641-58.394-94.896-95.833-161.827-99.676C261.028 55.961 256 50.751 256 44.352V20.309c0-6.904 5.808-12.337 12.703-11.982 83.556 4.306 160.163 50.864 202.11 123.677 42.063 72.696 44.079 162.316 6.031 236.832-3.14 6.148-10.75 8.461-16.728 5.01z"/></svg>
+                <span class="ugs-submit-label">Request a Technical Scoping Call</span>
+              </button>
+            </div>
+            <p class="cta-footer">We'll use these details to schedule a scoping call. We won't add you to marketing lists without separate consent. Prefer email? Reach us at <a href="mailto:hello@kataba.ai">hello@kataba.ai</a></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ── FAQ ── -->
+<section id="ugs-faq" class="ugs-section">
+  <div class="ugs-section-head">
+    <h2 class="ugs-h2 reveal">Frequently asked questions</h2>
+  </div>
+  <div class="faq-list reveal">
+    <details class="faq-item">
+      <summary>What is the difference between API RP 1170 and API RP 1171?<span class="faq-icon">+</span></summary>
+      <p>API RP 1170 addresses the design and operation of solution-mined salt caverns used for natural gas storage. API RP 1171 addresses the functional integrity of natural gas storage in depleted hydrocarbon and aquifer reservoirs. Both were incorporated into 49 CFR Part 192 by PHMSA, effective January 1, 2026.</p>
+    </details>
+    <details class="faq-item">
+      <summary>How does Kataba support procedure gap analysis?<span class="faq-icon">+</span></summary>
+      <p>Kataba connects each applicable requirement or review question to your operating procedures, document versions, and supporting records, then separately classifies present, missing, stale, and conflicting evidence so a reviewer can see exactly where a procedure is supported and where it is not.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Can Kataba work with scanned and handwritten records?<span class="faq-icon">+</span></summary>
+      <p>Yes. Kataba uses OCR, table extraction, and handwriting recognition to make scanned reports, historical well files, forms, and maps searchable. Low-confidence extractions stay linked to the original page and are flagged for human verification.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Can Kataba connect to databases and existing repositories?<span class="faq-icon">+</span></summary>
+      <p>Database and repository connections are scoped per engagement based on the operator's systems and requirements. During a bounded POC, Kataba typically works from an approved export or a defined access point agreed with the operator in advance.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Does Kataba determine whether an operator is compliant?<span class="faq-icon">+</span></summary>
+      <p>No. Kataba organizes and tests the available evidence, identifies gaps and conflicts, and supports expert review. Regulatory and engineering determinations remain with the operator’s authorized personnel and advisors.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Can Kataba be deployed on premises?<span class="faq-icon">+</span></summary>
+      <p>Deployment options, including on-premises or private-cloud configurations, are discussed and scoped during the POC to align with the operator's IT and security requirements.</p>
+    </details>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <a href="/" class="logo" style="text-decoration:none;">
+      <div class="logo-mark">K</div>
+      <span style="font-weight:800;font-size:0.95rem;letter-spacing:-0.02em;color:var(--text);">Kataba</span>
+    </a>
+    <span class="footer-copy">AI knowledge retrieval for geoscience, subsurface, and technical energy teams.</span>
+    <nav class="footer-links" aria-label="Footer">
+      <a href="/">Home</a>
+      <a href="/ugs" aria-current="page">UGS Solution</a>
+      <a href="mailto:hello@kataba.ai">Contact</a>
+    </nav>
+  </div>
+  <p class="footer-disclaimer">Kataba supports technical evidence review and does not provide legal advice or make autonomous regulatory-compliance determinations.</p>
+</footer>
+
+<!-- Structured data: Service -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "API RP 1170/1171 Procedure Gap Analysis for Underground Natural Gas Storage",
+  "serviceType": "API RP 1170 and API RP 1171 procedure gap analysis and evidence assurance",
+  "provider": {
+    "@type": "Organization",
+    "name": "Kataba",
+    "url": "https://kataba.ai/"
+  },
+  "areaServed": "US",
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Underground natural gas storage compliance, integrity, engineering, and IT leaders"
+  },
+  "description": "Kataba helps underground natural gas storage teams compare O&M procedures with API RP 1170/1171, trace evidence, and identify gaps before expert review.",
+  "url": "https://kataba.ai/ugs"
+}
+</script>
+
+<!-- Structured data: FAQPage (must match visible FAQ content exactly) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the difference between API RP 1170 and API RP 1171?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "API RP 1170 addresses the design and operation of solution-mined salt caverns used for natural gas storage. API RP 1171 addresses the functional integrity of natural gas storage in depleted hydrocarbon and aquifer reservoirs. Both were incorporated into 49 CFR Part 192 by PHMSA, effective January 1, 2026."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does Kataba support procedure gap analysis?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Kataba connects each applicable requirement or review question to your operating procedures, document versions, and supporting records, then separately classifies present, missing, stale, and conflicting evidence so a reviewer can see exactly where a procedure is supported and where it is not."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can Kataba work with scanned and handwritten records?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Kataba uses OCR, table extraction, and handwriting recognition to make scanned reports, historical well files, forms, and maps searchable. Low-confidence extractions stay linked to the original page and are flagged for human verification."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can Kataba connect to databases and existing repositories?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Database and repository connections are scoped per engagement based on the operator's systems and requirements. During a bounded POC, Kataba typically works from an approved export or a defined access point agreed with the operator in advance."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does Kataba determine whether an operator is compliant?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Kataba organizes and tests the available evidence, identifies gaps and conflicts, and supports expert review. Regulatory and engineering determinations remain with the operator’s authorized personnel and advisors."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can Kataba be deployed on premises?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Deployment options, including on-premises or private-cloud configurations, are discussed and scoped during the POC to align with the operator's IT and security requirements."
+      }
+    }
+  ]
+}
+</script>
+
+<script src="/assets/site.js"></script>
+<script src="/assets/ugs.js"></script>
+</body>
+</html>

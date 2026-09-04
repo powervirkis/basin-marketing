@@ -1,0 +1,23 @@
+{
+  "name": "basin-marketing",
+  "version": "1.0.0",
+  "description": "Kataba marketing site (static HTML/CSS/JS, served by server.py)",
+  "private": true,
+  "scripts": {
+    "test": "node test/run-checks.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/powervirkis/basin-marketing.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/powervirkis/basin-marketing/issues"
+  },
+  "homepage": "https://github.com/powervirkis/basin-marketing#readme",
+  "devDependencies": {
+    "playwright": "^1.43.0"
+  }
+}
