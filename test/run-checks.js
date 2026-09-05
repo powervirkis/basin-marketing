@@ -364,21 +364,21 @@ async function checkOverflow(page, label) {
     const h1Text = await page.locator('h1').textContent();
     check('/insights H1 is "Technical Insights"', h1Text.trim() === 'Technical Insights');
     check('insights_index_view analytics event fired', events.some((e) => e.name === 'insights_index_view'));
-    // The gap-analysis article is still draft: true in content/insights, so
-    // it must not appear as a public card on the index.
-    const draftCardLink = await page.locator('a[href="/insights/api-rp-1170-1171-procedure-gap-analysis"]').count();
-    check('draft article is excluded from the public Insights index', draftCardLink === 0);
+    // The gap-analysis article is published (draft: false), so it must
+    // appear as a public card on the index and the empty state must be gone.
+    const publishedCardLink = await page.locator('a[href="/insights/api-rp-1170-1171-procedure-gap-analysis"]').count();
+    check('published article appears on the public Insights index', publishedCardLink >= 1);
     const emptyState = await page.locator('.insights-index-empty').count();
-    check('empty-state message shown while no articles are published', emptyState === 1);
+    check('empty-state message is not shown once an article is published', emptyState === 0);
     await page.close();
   }
 
-  // ── Homepage / /ugs must not link to the still-draft article ─────────────
+  // ── Homepage / /ugs must link to the now-published article ───────────────
   {
     const page = await browser.newPage({ viewport: VIEWPORTS.desktop });
     await page.goto(BASE + '/', { waitUntil: 'networkidle' });
-    const homeLinksToDraft = await page.locator('a[href="/insights/api-rp-1170-1171-procedure-gap-analysis"]').count();
-    check('homepage does not link to the draft article', homeLinksToDraft === 0);
+    const homeLinksToArticle = await page.locator('#ugs-feature a[href="/insights/api-rp-1170-1171-procedure-gap-analysis"]').count();
+    check('homepage "Latest insight" card links to the published article', homeLinksToArticle >= 1);
     const homeInsightsFooterLink = await page.locator('footer a[href="/insights"]').count();
     check('homepage footer links to /insights', homeInsightsFooterLink === 1);
     await page.close();
@@ -386,8 +386,8 @@ async function checkOverflow(page, label) {
   {
     const page = await browser.newPage({ viewport: VIEWPORTS.desktop });
     await page.goto(BASE + '/ugs', { waitUntil: 'networkidle' });
-    const ugsLinksToDraft = await page.locator('a[href="/insights/api-rp-1170-1171-procedure-gap-analysis"]').count();
-    check('/ugs does not link to the draft article', ugsLinksToDraft === 0);
+    const ugsLinksToArticle = await page.locator('#ugs-related-insight a[href="/insights/api-rp-1170-1171-procedure-gap-analysis"]').count();
+    check('/ugs "Related insight" card links to the published article', ugsLinksToArticle >= 1);
     const ugsInsightsFooterLink = await page.locator('footer a[href="/insights"]').count();
     check('/ugs footer links to /insights', ugsInsightsFooterLink === 1);
     // #poc and #cta anchors must exist for the article's CTAs to land on.
@@ -398,17 +398,17 @@ async function checkOverflow(page, label) {
     await page.close();
   }
 
-  // ── Sitemap excludes the draft article ────────────────────────────────────
+  // ── Sitemap includes the now-published article ───────────────────────────
   {
     const page = await browser.newPage({ viewport: VIEWPORTS.desktop });
     const res = await page.goto(BASE + '/sitemap.xml', { waitUntil: 'networkidle' });
     const body = await res.text();
     check('sitemap.xml includes /insights', body.includes('https://kataba.ai/insights</loc>'));
-    check('sitemap.xml excludes the still-draft article', !body.includes('api-rp-1170-1171-procedure-gap-analysis'));
+    check('sitemap.xml includes the published article', body.includes('api-rp-1170-1171-procedure-gap-analysis'));
     await page.close();
   }
 
-  // ── Article page (reachable directly while draft, per spec) ──────────────
+  // ── Article page ───────────────────────────────────────────────────────────
   const ARTICLE_PATH = '/insights/api-rp-1170-1171-procedure-gap-analysis';
   for (const [label, vp] of Object.entries(VIEWPORTS)) {
     const page = await browser.newPage({ viewport: vp });
@@ -440,8 +440,8 @@ async function checkOverflow(page, label) {
     const h1Text = (await page.locator('h1').textContent()).trim();
     check('article H1 matches frontmatter title', h1Text.startsWith('API RP 1170 and 1171 Second Editions'));
 
-    const robots = await page.locator('meta[name="robots"]').getAttribute('content');
-    check('draft article has noindex,nofollow while unpublished', robots === 'noindex, nofollow');
+    const robotsCount = await page.locator('meta[name="robots"]').count();
+    check('published article has no noindex/nofollow meta tag', robotsCount === 0);
 
     const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
     check('article canonical is self-referencing', canonical === 'https://kataba.ai' + ARTICLE_PATH);

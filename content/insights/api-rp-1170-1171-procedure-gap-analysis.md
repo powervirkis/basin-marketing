@@ -10,8 +10,8 @@ category: "Underground Natural Gas Storage"
 category_label: "UNDERGROUND NATURAL GAS STORAGE"
 breadcrumb_label: "UGS"
 card_label: "PRACTICAL GUIDE"
-draft: true
-review_status: "UGS SME review required"
+draft: false
+review_status: "Approved for publication"
 excerpt: "A useful gap analysis does more than compare two documents. It connects applicable requirements to current procedures, responsible roles, operating records and reviewable evidence."
 ---
 
