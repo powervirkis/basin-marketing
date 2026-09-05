@@ -175,7 +175,7 @@ def wrap_tables(html_str):
         preceding = html_str[: match.start()]
         heading_match = list(re.finditer(r'<h[23][^>]*>(.*?)</h[23]>', preceding))
         label = strip_tags(heading_match[-1].group(1)).strip() if heading_match else "table"
-        label = re.sub(r"^\d+\s+", "", label)
+        label = re.sub(r"^\d+[.)]?\s+", "", label)
         return (
             f'<div class="article-table-wrapper" tabindex="0" role="region" '
             f'aria-label="{html_lib.escape(label)} table, scrollable horizontally">' + table_html + "</div>"
@@ -258,8 +258,10 @@ def style_workflow_step_numbers(html_str):
     return _STEP_HEADING_RE.sub(_replace, html_str)
 
 
-def insert_inline_cta(html_str, toc_flat):
-    target = next((t for t in toc_flat if t["name"] == "The minimum viable gap matrix"), None)
+def insert_inline_cta(html_str, toc_flat, after_heading):
+    if not after_heading:
+        return html_str
+    target = next((t for t in toc_flat if t["name"] == after_heading), None)
     if not target:
         return html_str
     start = find_heading_html_start(html_str, target["id"])
@@ -341,6 +343,15 @@ class Article:
         self.category_label = fm.get("category_label", self.category.upper())
         self.breadcrumb_label = fm.get("breadcrumb_label", self.category)
         self.card_label = fm.get("card_label", "INSIGHT")
+        # Which heading to place the restrained inline CTA after. Configurable
+        # per-article via frontmatter; defaults to the first article's heading
+        # for backward compatibility with existing content that predates this
+        # field. If the named heading isn't found, insert_inline_cta no-ops.
+        self.inline_cta_after = fm.get("inline_cta_after", "The minimum viable gap matrix")
+        # Link text for the homepage/UGS-page cross-link card. Configurable
+        # per-article so the copy stays specific to what the linked article
+        # actually covers; defaults to the first article's wording.
+        self.crosslink_link_text = fm.get("crosslink_link_text", "Read the procedure gap-analysis workflow")
         self.draft = bool(fm.get("draft", False))
         self.review_status = fm.get("review_status", "")
         self.date_raw = fm.get("date", "")
@@ -366,7 +377,7 @@ class Article:
         # those already have hardcoded, correct classes/attributes and
         # shouldn't be re-matched by the generic <a href> rewrite.
         processed = process_links(processed)
-        processed = insert_inline_cta(processed, toc_flat)
+        processed = insert_inline_cta(processed, toc_flat, self.inline_cta_after)
         processed = append_final_cta(processed)
         processed = sanitize_html(processed)
         self.body_html = processed
@@ -704,7 +715,7 @@ def update_cross_links(published):
           <h3><a href="{latest.url_path}">{html_lib.escape(latest.title)}</a></h3>
           <p>{html_lib.escape(latest.excerpt)}</p>
           <p class="insight-card-meta">{latest.date_display} &middot; {latest.reading_minutes} min read</p>
-          <a href="{latest.url_path}" class="insight-card-link" data-analytics-cta="homepage-latest-insight">Read the procedure gap-analysis workflow &rarr;</a>
+          <a href="{latest.url_path}" class="insight-card-link" data-analytics-cta="homepage-latest-insight">{html_lib.escape(latest.crosslink_link_text)} &rarr;</a>
         """
         # Homepage: nested inline inside the existing #ugs-feature section.
         latest_html = f'\n        <div class="insight-crosslink-card">{card_inner}</div>\n        '

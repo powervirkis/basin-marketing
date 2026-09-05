@@ -16,6 +16,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://kataba.ai/insights/cited-ai-answer-ugs-evidence-completeness</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://kataba.ai/insights/api-rp-1170-1171-procedure-gap-analysis</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

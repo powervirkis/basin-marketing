@@ -5,7 +5,7 @@ const BASE = 'http://localhost:8080';
 
 (async () => {
   const browser = await chromium.launch();
-  for (const url of [BASE + '/', BASE + '/ugs', BASE + '/insights', BASE + '/insights/api-rp-1170-1171-procedure-gap-analysis']) {
+  for (const url of [BASE + '/', BASE + '/ugs', BASE + '/insights', BASE + '/insights/api-rp-1170-1171-procedure-gap-analysis', BASE + '/insights/cited-ai-answer-ugs-evidence-completeness']) {
     const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
     const page = await context.newPage();
     await page.goto(url, { waitUntil: 'networkidle' });

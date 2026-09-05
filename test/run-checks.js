@@ -80,7 +80,7 @@ async function checkOverflow(page, label) {
 
   // ── Favicon: real Kataba icon, not the empty data: URI placeholder ───────
   {
-    for (const p of ['/', '/ugs', '/insights', '/insights/api-rp-1170-1171-procedure-gap-analysis']) {
+    for (const p of ['/', '/ugs', '/insights', '/insights/api-rp-1170-1171-procedure-gap-analysis', '/insights/cited-ai-answer-ugs-evidence-completeness']) {
       const page = await browser.newPage({ viewport: VIEWPORTS.desktop });
       await page.goto(BASE + p, { waitUntil: 'networkidle' });
       const iconHref = await page.locator('link[rel="icon"]').first().getAttribute('href');
@@ -377,21 +377,35 @@ async function checkOverflow(page, label) {
     const h1Text = await page.locator('h1').textContent();
     check('/insights H1 is "Technical Insights"', h1Text.trim() === 'Technical Insights');
     check('insights_index_view analytics event fired', events.some((e) => e.name === 'insights_index_view'));
-    // The gap-analysis article is published (draft: false), so it must
-    // appear as a public card on the index and the empty state must be gone.
-    const publishedCardLink = await page.locator('a[href="/insights/api-rp-1170-1171-procedure-gap-analysis"]').count();
-    check('published article appears on the public Insights index', publishedCardLink >= 1);
+    // Both published articles (draft: false) must appear as public cards on
+    // the index and the empty state must be gone.
+    const article1Link = await page.locator('a[href="/insights/api-rp-1170-1171-procedure-gap-analysis"]').count();
+    const article2Link = await page.locator('a[href="/insights/cited-ai-answer-ugs-evidence-completeness"]').count();
+    check('article 1 appears on the public Insights index', article1Link >= 1);
+    check('article 2 appears on the public Insights index', article2Link >= 1);
     const emptyState = await page.locator('.insights-index-empty').count();
-    check('empty-state message is not shown once an article is published', emptyState === 0);
+    check('empty-state message is not shown once articles are published', emptyState === 0);
+
+    // Index cards are sorted newest first: article 2 (Sep 5) before article 1 (Sep 4).
+    const cardTitles = await page.locator('.insight-card-title, .insight-card h2 a, .insight-card a').evaluateAll(
+      (links) => links.map((l) => l.getAttribute('href')).filter((h) => h && h.startsWith('/insights/') && h !== '/insights')
+    );
+    const idx1 = cardTitles.indexOf('/insights/cited-ai-answer-ugs-evidence-completeness');
+    const idx2 = cardTitles.indexOf('/insights/api-rp-1170-1171-procedure-gap-analysis');
+    check('newest article (Sep 5) is listed before the older article (Sep 4)', idx1 !== -1 && idx2 !== -1 && idx1 < idx2);
     await page.close();
   }
 
-  // ── Homepage / /ugs must link to the now-published article ───────────────
+  // ── Homepage / /ugs must link to the latest published article ────────────
+  // The cross-link card always tracks whichever published article is most
+  // recent (by date), so with 2 articles published it now points at article
+  // 2 (Sep 5) rather than article 1 (Sep 4).
+  const LATEST_ARTICLE_PATH = '/insights/cited-ai-answer-ugs-evidence-completeness';
   {
     const page = await browser.newPage({ viewport: VIEWPORTS.desktop });
     await page.goto(BASE + '/', { waitUntil: 'networkidle' });
-    const homeLinksToArticle = await page.locator('#ugs-feature a[href="/insights/api-rp-1170-1171-procedure-gap-analysis"]').count();
-    check('homepage "Latest insight" card links to the published article', homeLinksToArticle >= 1);
+    const homeLinksToArticle = await page.locator(`#ugs-feature a[href="${LATEST_ARTICLE_PATH}"]`).count();
+    check('homepage "Latest insight" card links to the most recently published article', homeLinksToArticle >= 1);
     const homeInsightsFooterLink = await page.locator('footer a[href="/insights"]').count();
     check('homepage footer links to /insights', homeInsightsFooterLink === 1);
     await page.close();
@@ -399,8 +413,8 @@ async function checkOverflow(page, label) {
   {
     const page = await browser.newPage({ viewport: VIEWPORTS.desktop });
     await page.goto(BASE + '/ugs', { waitUntil: 'networkidle' });
-    const ugsLinksToArticle = await page.locator('#ugs-related-insight a[href="/insights/api-rp-1170-1171-procedure-gap-analysis"]').count();
-    check('/ugs "Related insight" card links to the published article', ugsLinksToArticle >= 1);
+    const ugsLinksToArticle = await page.locator(`#ugs-related-insight a[href="${LATEST_ARTICLE_PATH}"]`).count();
+    check('/ugs "Related insight" card links to the most recently published article', ugsLinksToArticle >= 1);
     const ugsInsightsFooterLink = await page.locator('footer a[href="/insights"]').count();
     check('/ugs footer links to /insights', ugsInsightsFooterLink === 1);
     // #poc and #cta anchors must exist for the article's CTAs to land on.
@@ -411,155 +425,182 @@ async function checkOverflow(page, label) {
     await page.close();
   }
 
-  // ── Sitemap includes the now-published article ───────────────────────────
+  // ── Sitemap includes both now-published articles ──────────────────────────
   {
     const page = await browser.newPage({ viewport: VIEWPORTS.desktop });
     const res = await page.goto(BASE + '/sitemap.xml', { waitUntil: 'networkidle' });
     const body = await res.text();
     check('sitemap.xml includes /insights', body.includes('https://kataba.ai/insights</loc>'));
-    check('sitemap.xml includes the published article', body.includes('api-rp-1170-1171-procedure-gap-analysis'));
+    check('sitemap.xml includes article 1', body.includes('api-rp-1170-1171-procedure-gap-analysis'));
+    check('sitemap.xml includes article 2', body.includes('cited-ai-answer-ugs-evidence-completeness'));
     await page.close();
   }
 
-  // ── Article page ───────────────────────────────────────────────────────────
-  const ARTICLE_PATH = '/insights/api-rp-1170-1171-procedure-gap-analysis';
-  for (const [label, vp] of Object.entries(VIEWPORTS)) {
-    const page = await browser.newPage({ viewport: vp });
-    page.on('console', (msg) => { if (msg.type() === 'error') consoleErrors.push(`[article:${label}] ${msg.text()}`); });
-    page.on('pageerror', (err) => consoleErrors.push(`[article:${label}] pageerror: ${err.message}`));
-    await page.goto(BASE + ARTICLE_PATH, { waitUntil: 'networkidle' });
-    await page.waitForTimeout(200);
-    await page.screenshot({ path: path.join(OUT, `article-${label}.png`), fullPage: true });
-    await checkOverflow(page, `article-${label}`);
-    // tables must scroll within their own container, never overflow the page
-    const tableOverflow = await page.evaluate(() => {
-      const doc = document.documentElement.clientWidth;
-      return Array.from(document.querySelectorAll('table')).every((t) => t.closest('.article-table-wrapper'));
-    });
-    check(`article-${label}: all tables are wrapped in a scrollable container`, tableOverflow);
-    await page.close();
-  }
-  {
-    const page = await browser.newPage({ viewport: VIEWPORTS.desktop });
-    const events = [];
-    await page.exposeFunction('__recordArticle', (name, params) => events.push({ name, params }));
-    await page.addInitScript(() => {
-      window.gtag = function (type, name, params) { window.__recordArticle(name, params); };
-    });
-    await page.goto(BASE + ARTICLE_PATH, { waitUntil: 'networkidle' });
+  // ── Article pages ──────────────────────────────────────────────────────────
+  // Structural/SEO/analytics checks are identical in shape across articles,
+  // so they're parameterized here rather than duplicated per article. Adding
+  // a third article later only means adding one entry to this array.
+  const ARTICLES = [
+    {
+      shot: 'article',
+      path: '/insights/api-rp-1170-1171-procedure-gap-analysis',
+      slug: 'api-rp-1170-1171-procedure-gap-analysis',
+      h1Prefix: 'API RP 1170 and 1171 Second Editions',
+      dateText: 'September 4, 2026',
+      readingMin: 8,
+      readingMax: 14,
+    },
+    {
+      shot: 'article2',
+      path: '/insights/cited-ai-answer-ugs-evidence-completeness',
+      slug: 'cited-ai-answer-ugs-evidence-completeness',
+      h1Prefix: 'Why a Cited AI Answer Is Not Proof',
+      dateText: 'September 5, 2026',
+      readingMin: 9,
+      readingMax: 17,
+    },
+  ];
 
-    const h1Count = await page.locator('h1').count();
-    check('article page has exactly one H1', h1Count === 1);
-    const h1Text = (await page.locator('h1').textContent()).trim();
-    check('article H1 matches frontmatter title', h1Text.startsWith('API RP 1170 and 1171 Second Editions'));
-
-    const robotsCount = await page.locator('meta[name="robots"]').count();
-    check('published article has no noindex/nofollow meta tag', robotsCount === 0);
-
-    const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
-    check('article canonical is self-referencing', canonical === 'https://kataba.ai' + ARTICLE_PATH);
-
-    const breadcrumbText = (await page.locator('.breadcrumb').textContent()).replace(/\s+/g, ' ').trim();
-    check('breadcrumb reads Home / Insights / UGS', breadcrumbText === 'Home / Insights / UGS');
-
-    const metaLine = (await page.locator('.insight-meta').textContent()).replace(/\s+/g, ' ').trim();
-    check('metadata line follows "Kataba · <date> · N min read"', /^Kataba . September 4, 2026 . \d+ min read$/.test(metaLine));
-
-    const ldBlocks = await page.locator('script[type="application/ld+json"]').allTextContents();
-    check('article has 2 JSON-LD blocks (TechArticle + BreadcrumbList)', ldBlocks.length === 2);
-    let ldParsedOk = true;
-    let hasTechArticle = false;
-    for (const block of ldBlocks) {
-      try {
-        const parsed = JSON.parse(block);
-        if (parsed['@type'] === 'TechArticle') hasTechArticle = true;
-      } catch (e) { ldParsedOk = false; }
+  for (const art of ARTICLES) {
+    for (const [label, vp] of Object.entries(VIEWPORTS)) {
+      const page = await browser.newPage({ viewport: vp });
+      page.on('console', (msg) => { if (msg.type() === 'error') consoleErrors.push(`[${art.shot}:${label}] ${msg.text()}`); });
+      page.on('pageerror', (err) => consoleErrors.push(`[${art.shot}:${label}] pageerror: ${err.message}`));
+      await page.goto(BASE + art.path, { waitUntil: 'networkidle' });
+      await page.waitForTimeout(200);
+      await page.screenshot({ path: path.join(OUT, `${art.shot}-${label}.png`), fullPage: true });
+      await checkOverflow(page, `${art.shot}-${label}`);
+      // tables must scroll within their own container, never overflow the page
+      const tableOverflow = await page.evaluate(() => {
+        return Array.from(document.querySelectorAll('table')).every((t) => t.closest('.article-table-wrapper'));
+      });
+      check(`${art.shot}-${label}: all tables are wrapped in a scrollable container`, tableOverflow);
+      await page.close();
     }
-    check('all article JSON-LD blocks parse as valid JSON', ldParsedOk);
-    check('a TechArticle JSON-LD block is present', hasTechArticle);
 
-    check('article_view analytics event fired on load', events.some((e) => e.name === 'article_view'));
-    const viewEvent = events.find((e) => e.name === 'article_view');
-    check('article_view includes article_slug', viewEvent && viewEvent.params && viewEvent.params.article_slug === 'api-rp-1170-1171-procedure-gap-analysis');
+    {
+      const page = await browser.newPage({ viewport: VIEWPORTS.desktop });
+      const events = [];
+      await page.exposeFunction('__recordArticle_' + art.shot, (name, params) => events.push({ name, params }));
+      await page.addInitScript((fnName) => {
+        window.gtag = function (type, name, params) { window[fnName](name, params); };
+      }, '__recordArticle_' + art.shot);
+      await page.goto(BASE + art.path, { waitUntil: 'networkidle' });
 
-    // Heading anchors: every TOC link's target id must exist on the page
-    const tocHrefs = await page.locator('.toc-link').evaluateAll((links) => links.map((l) => l.getAttribute('href')));
-    check('TOC has multiple entries', tocHrefs.length > 5);
-    const allAnchorsResolve = await page.evaluate((hrefs) => hrefs.every((h) => !!document.getElementById(h.replace('#', ''))), tocHrefs);
-    check('every TOC link resolves to a heading id on the page', allAnchorsResolve);
+      const h1Count = await page.locator('h1').count();
+      check(`${art.shot}: page has exactly one H1`, h1Count === 1);
+      const h1Text = (await page.locator('h1').textContent()).trim();
+      check(`${art.shot}: H1 matches frontmatter title`, h1Text.startsWith(art.h1Prefix));
 
-    // Clicking a TOC link scrolls to and fires analytics
-    const secondTocLink = page.locator('.toc-link').nth(1);
-    const targetHref = await secondTocLink.getAttribute('href');
-    await secondTocLink.click();
-    await page.waitForFunction((sel) => {
-      const el = document.querySelector(sel);
-      const r = el.getBoundingClientRect();
-      return r.top < window.innerHeight && r.bottom > 0;
-    }, targetHref, { timeout: 3000 }).catch(() => {});
-    const targetBox = await page.locator(targetHref).boundingBox();
-    check('TOC link scrolls target heading into view', targetBox && targetBox.y < page.viewportSize().height && targetBox.y > -50);
-    check('article_toc_click analytics event fired', events.some((e) => e.name === 'article_toc_click'));
+      const robotsCount = await page.locator('meta[name="robots"]').count();
+      check(`${art.shot}: published article has no noindex/nofollow meta tag`, robotsCount === 0);
 
-    // Inline CTA (mid-article) points to /ugs#poc
-    const inlineCtaHref = await page.locator('.article-inline-cta a.btn').getAttribute('href');
-    check('inline CTA links to /ugs#poc', inlineCtaHref === '/ugs#poc');
-    await page.locator('.article-inline-cta a.btn').click();
-    await page.waitForTimeout(100);
-    check('article_inline_cta_click analytics event fired', events.some((e) => e.name === 'article_inline_cta_click'));
+      const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
+      check(`${art.shot}: canonical is self-referencing`, canonical === 'https://kataba.ai' + art.path);
 
-    await page.close();
-  }
-  {
-    // Final CTA + source-link tracking on a fresh page load
-    const page = await browser.newPage({ viewport: VIEWPORTS.desktop });
-    const events = [];
-    await page.exposeFunction('__recordArticle2', (name, params) => events.push({ name, params }));
-    await page.addInitScript(() => {
-      window.gtag = function (type, name, params) { window.__recordArticle2(name, params); };
-    });
-    await page.goto(BASE + ARTICLE_PATH, { waitUntil: 'networkidle' });
+      const breadcrumbText = (await page.locator('.breadcrumb').textContent()).replace(/\s+/g, ' ').trim();
+      check(`${art.shot}: breadcrumb reads Home / Insights / UGS`, breadcrumbText === 'Home / Insights / UGS');
 
-    const finalPrimaryHref = await page.locator('.article-final-cta a.btn').getAttribute('href');
-    check('final CTA primary button links to /ugs#cta', finalPrimaryHref === '/ugs#cta');
-    const finalSecondaryHref = await page.locator('.article-final-cta-secondary').getAttribute('href');
-    check('final CTA secondary link points to /ugs', finalSecondaryHref === '/ugs');
+      const metaLine = (await page.locator('.insight-meta').textContent()).replace(/\s+/g, ' ').trim();
+      const metaLineRe = new RegExp(`^Kataba . ${art.dateText} . \\d+ min read$`);
+      check(`${art.shot}: metadata line follows "Kataba · <date> · N min read"`, metaLineRe.test(metaLine));
 
-    // External source links: open in new tab, use noopener/noreferrer, tracked.
-    // Must run before the final-CTA click below, since that click navigates
-    // this page away to /ugs (it's a same-tab link, not target="_blank").
-    const sourceLinks = await page.locator('.insight-body a.body-link--external').all();
-    check('article has external source links', sourceLinks.length >= 5);
-    let allSourcesSafe = true;
-    for (const link of sourceLinks) {
-      const target = await link.getAttribute('target');
-      const rel = await link.getAttribute('rel');
-      if (target !== '_blank' || !rel || !rel.includes('noopener') || !rel.includes('noreferrer')) allSourcesSafe = false;
-    }
-    check('all external source links open safely in a new tab', allSourcesSafe);
-    if (sourceLinks.length) {
-      // target="_blank" opens a real popup page; close it immediately so the
-      // test doesn't wait on/depend on a live third-party (phmsa.dot.gov) load.
-      const popupPromise = page.context().waitForEvent('page', { timeout: 2000 }).catch(() => null);
-      await sourceLinks[0].click();
-      const popup = await popupPromise;
-      if (popup) await popup.close().catch(() => {});
+      const ldBlocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+      check(`${art.shot}: has 2 JSON-LD blocks (TechArticle + BreadcrumbList)`, ldBlocks.length === 2);
+      let ldParsedOk = true;
+      let hasTechArticle = false;
+      for (const block of ldBlocks) {
+        try {
+          const parsed = JSON.parse(block);
+          if (parsed['@type'] === 'TechArticle') hasTechArticle = true;
+        } catch (e) { ldParsedOk = false; }
+      }
+      check(`${art.shot}: all JSON-LD blocks parse as valid JSON`, ldParsedOk);
+      check(`${art.shot}: a TechArticle JSON-LD block is present`, hasTechArticle);
+
+      check(`${art.shot}: article_view analytics event fired on load`, events.some((e) => e.name === 'article_view'));
+      const viewEvent = events.find((e) => e.name === 'article_view');
+      check(`${art.shot}: article_view includes article_slug`, viewEvent && viewEvent.params && viewEvent.params.article_slug === art.slug);
+
+      // Heading anchors: every TOC link's target id must exist on the page
+      const tocHrefs = await page.locator('.toc-link').evaluateAll((links) => links.map((l) => l.getAttribute('href')));
+      check(`${art.shot}: TOC has multiple entries`, tocHrefs.length > 5);
+      const allAnchorsResolve = await page.evaluate((hrefs) => hrefs.every((h) => !!document.getElementById(h.replace('#', ''))), tocHrefs);
+      check(`${art.shot}: every TOC link resolves to a heading id on the page`, allAnchorsResolve);
+
+      // Clicking a TOC link scrolls to and fires analytics
+      const secondTocLink = page.locator('.toc-link').nth(1);
+      const targetHref = await secondTocLink.getAttribute('href');
+      await secondTocLink.click();
+      await page.waitForFunction((sel) => {
+        const el = document.querySelector(sel);
+        const r = el.getBoundingClientRect();
+        return r.top < window.innerHeight && r.bottom > 0;
+      }, targetHref, { timeout: 3000 }).catch(() => {});
+      const targetBox = await page.locator(targetHref).boundingBox();
+      check(`${art.shot}: TOC link scrolls target heading into view`, targetBox && targetBox.y < page.viewportSize().height && targetBox.y > -50);
+      check(`${art.shot}: article_toc_click analytics event fired`, events.some((e) => e.name === 'article_toc_click'));
+
+      // Inline CTA (mid-article) points to /ugs#poc
+      const inlineCtaHref = await page.locator('.article-inline-cta a.btn').getAttribute('href');
+      check(`${art.shot}: inline CTA links to /ugs#poc`, inlineCtaHref === '/ugs#poc');
+      await page.locator('.article-inline-cta a.btn').click();
       await page.waitForTimeout(100);
-      check('article_source_link_click analytics event fired', events.some((e) => e.name === 'article_source_link_click'));
+      check(`${art.shot}: article_inline_cta_click analytics event fired`, events.some((e) => e.name === 'article_inline_cta_click'));
+
+      await page.close();
     }
+    {
+      // Final CTA + source-link tracking on a fresh page load
+      const page = await browser.newPage({ viewport: VIEWPORTS.desktop });
+      const events = [];
+      await page.exposeFunction('__recordArticleB_' + art.shot, (name, params) => events.push({ name, params }));
+      await page.addInitScript((fnName) => {
+        window.gtag = function (type, name, params) { window[fnName](name, params); };
+      }, '__recordArticleB_' + art.shot);
+      await page.goto(BASE + art.path, { waitUntil: 'networkidle' });
 
-    // Reading-time + word-derived value is present and plausible for ~2,250 words
-    const metaLine = await page.locator('.insight-meta').textContent();
-    const minutesMatch = metaLine.match(/(\d+) min read/);
-    check('reading time is a plausible calculated value (8-14 min)', !!minutesMatch && +minutesMatch[1] >= 8 && +minutesMatch[1] <= 14);
+      const finalPrimaryHref = await page.locator('.article-final-cta a.btn').getAttribute('href');
+      check(`${art.shot}: final CTA primary button links to /ugs#cta`, finalPrimaryHref === '/ugs#cta');
+      const finalSecondaryHref = await page.locator('.article-final-cta-secondary').getAttribute('href');
+      check(`${art.shot}: final CTA secondary link points to /ugs`, finalSecondaryHref === '/ugs');
 
-    // Final CTA click navigates away to /ugs#cta -- keep this last.
-    await page.locator('.article-final-cta a.btn').scrollIntoViewIfNeeded();
-    await page.locator('.article-final-cta a.btn').click();
-    await page.waitForTimeout(100);
-    check('article_final_cta_click analytics event fired', events.some((e) => e.name === 'article_final_cta_click'));
+      // External source links: open in new tab, use noopener/noreferrer, tracked.
+      // Must run before the final-CTA click below, since that click navigates
+      // this page away to /ugs (it's a same-tab link, not target="_blank").
+      const sourceLinks = await page.locator('.insight-body a.body-link--external').all();
+      check(`${art.shot}: article has external source links`, sourceLinks.length >= 5);
+      let allSourcesSafe = true;
+      for (const link of sourceLinks) {
+        const target = await link.getAttribute('target');
+        const rel = await link.getAttribute('rel');
+        if (target !== '_blank' || !rel || !rel.includes('noopener') || !rel.includes('noreferrer')) allSourcesSafe = false;
+      }
+      check(`${art.shot}: all external source links open safely in a new tab`, allSourcesSafe);
+      if (sourceLinks.length) {
+        // target="_blank" opens a real popup page; close it immediately so the
+        // test doesn't wait on/depend on a live third-party (phmsa.dot.gov) load.
+        const popupPromise = page.context().waitForEvent('page', { timeout: 2000 }).catch(() => null);
+        await sourceLinks[0].click();
+        const popup = await popupPromise;
+        if (popup) await popup.close().catch(() => {});
+        await page.waitForTimeout(100);
+        check(`${art.shot}: article_source_link_click analytics event fired`, events.some((e) => e.name === 'article_source_link_click'));
+      }
 
-    await page.close();
+      // Reading-time + word-derived value is present and plausible
+      const metaLine = await page.locator('.insight-meta').textContent();
+      const minutesMatch = metaLine.match(/(\d+) min read/);
+      check(`${art.shot}: reading time is a plausible calculated value (${art.readingMin}-${art.readingMax} min)`, !!minutesMatch && +minutesMatch[1] >= art.readingMin && +minutesMatch[1] <= art.readingMax);
+
+      // Final CTA click navigates away to /ugs#cta -- keep this last.
+      await page.locator('.article-final-cta a.btn').scrollIntoViewIfNeeded();
+      await page.locator('.article-final-cta a.btn').click();
+      await page.waitForTimeout(100);
+      check(`${art.shot}: article_final_cta_click analytics event fired`, events.some((e) => e.name === 'article_final_cta_click'));
+
+      await page.close();
+    }
   }
 
   console.log('\n--- Console/page errors captured ---');
