@@ -1,5 +1,6 @@
 import os
 import json
+import sys
 import urllib.parse
 import urllib.request
 import urllib.error
@@ -10,6 +11,20 @@ PORT         = int(os.environ.get("PORT", 8080))
 DIR          = os.path.dirname(os.path.abspath(__file__))
 BREVO_API_KEY = os.environ.get("BREVO_API_KEY", "")
 BREVO_LIST_ID = os.environ.get("BREVO_LIST_ID", "")   # numeric string; optional
+
+# ── Insights content build ───────────────────────────────────────────────
+# Static Insights pages (insights/<slug>/index.html, insights/index.html,
+# sitemap.xml) are generated from content/insights/*.md at process start.
+# This keeps local dev/preview always in sync with current frontmatter
+# (e.g. flipping `draft: false`) without a separate manual build step. A
+# `release: python scripts/build_insights.py` step should also run this on
+# deploy so production output is regenerated whenever content changes.
+sys.path.insert(0, DIR)
+try:
+    from scripts.build_insights import main as build_insights_main
+    build_insights_main()
+except Exception as exc:  # noqa: BLE001 - never let a content bug take the site down
+    print(f"[server] Insights build failed, serving existing output as-is: {exc}", flush=True)
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -25,11 +40,20 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     # directory-slash redirect that http.server would otherwise issue.
     CLEAN_ROUTES = {
         "/ugs": "/ugs/index.html",
+        "/insights": "/insights/index.html",
     }
 
     def _rewrite_clean_path(self):
         parsed = urllib.parse.urlsplit(self.path)
         target = self.CLEAN_ROUTES.get(parsed.path)
+        if not target and parsed.path.startswith("/insights/"):
+            # Scan-based, not hardcoded per-article: any insights/<slug>/
+            # directory with an index.html is served at /insights/<slug>,
+            # so adding a new article never requires a server.py change.
+            slug = parsed.path[len("/insights/"):].strip("/")
+            candidate = os.path.join(DIR, "insights", slug, "index.html")
+            if slug and os.path.isfile(candidate):
+                target = f"/insights/{slug}/index.html"
         if target:
             self.path = urllib.parse.urlunsplit(("", "", target, parsed.query, parsed.fragment))
 

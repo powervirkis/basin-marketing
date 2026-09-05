@@ -1,1 +1,4 @@
-# No dependencies — uses Python stdlib only
+# markdown: pure-Python, dependency-free Markdown→HTML renderer used by the
+# build-time Insights content pipeline (scripts/build_insights.py). No other
+# dependencies — everything else uses the stdlib.
+markdown==3.10.3

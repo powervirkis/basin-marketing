@@ -22,6 +22,7 @@
   <meta name="twitter:image" content="https://kataba.ai/assets/ugs-og.png" />
 
   <link rel="stylesheet" href="/assets/site.css" />
+  <link rel="stylesheet" href="/assets/insights.css" />
   <style>
     /* ── UGS Hero ── */
     #ugs-hero {
@@ -325,6 +326,8 @@
   </div>
 </section>
 
+<!-- INSIGHTS:RELATED:START --><!-- INSIGHTS:RELATED:END -->
+
 <hr class="divider" />
 
 <!-- ── Differentiated problem ── -->
@@ -525,6 +528,10 @@
 
 <hr class="divider" />
 
+<!-- Anchor alias so external links (e.g. /ugs#poc from Insights articles)
+     can target this section without colliding with the section's own id,
+     which analytics/JS also reference. -->
+<span id="poc" class="visually-hidden" aria-hidden="true"></span>
 <!-- ── Bounded POC ── -->
 <section id="ugs-poc" class="ugs-section">
   <div class="ugs-section-head">
@@ -577,6 +584,9 @@
 
 <hr class="divider" />
 
+<!-- Anchor alias so external links (e.g. /ugs#cta from Insights articles)
+     can target this section without colliding with its own id. -->
+<span id="cta" class="visually-hidden" aria-hidden="true"></span>
 <!-- ── Lead form ── -->
 <section id="ugs-lead-form">
   <div class="cta-inner reveal">
@@ -752,6 +762,7 @@
     <span class="footer-copy">AI knowledge retrieval for geoscience, subsurface, and technical energy teams.</span>
     <nav class="footer-links" aria-label="Footer">
       <a href="/">Home</a>
+      <a href="/insights">Insights</a>
       <a href="/ugs" aria-current="page">UGS Solution</a>
       <a href="mailto:hello@kataba.ai">Contact</a>
     </nav>
