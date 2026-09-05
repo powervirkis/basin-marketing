@@ -78,6 +78,19 @@ async function checkOverflow(page, label) {
     await page.close();
   }
 
+  // ── Favicon: real Kataba icon, not the empty data: URI placeholder ───────
+  {
+    for (const p of ['/', '/ugs', '/insights', '/insights/api-rp-1170-1171-procedure-gap-analysis']) {
+      const page = await browser.newPage({ viewport: VIEWPORTS.desktop });
+      await page.goto(BASE + p, { waitUntil: 'networkidle' });
+      const iconHref = await page.locator('link[rel="icon"]').first().getAttribute('href');
+      check(`${p}: favicon <link> is not the empty data: placeholder`, !!iconHref && !iconHref.startsWith('data:'));
+      await page.close();
+    }
+    const res = await (await browser.newPage()).goto(BASE + '/favicon.ico');
+    check('/favicon.ico resolves with 200', res.status() === 200);
+  }
+
   // Homepage mobile nav module screenshot
   {
     const page = await browser.newPage({ viewport: VIEWPORTS.mobile });

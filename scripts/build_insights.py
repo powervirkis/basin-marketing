@@ -449,7 +449,10 @@ ARTICLE_TEMPLATE = """<!DOCTYPE html>
   <title>{meta_title}</title>
   <meta name="description" content="{meta_description}" />{robots_tag}
   <link rel="canonical" href="{canonical_url}" />
-  <link rel="icon" href="data:," />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="{canonical_url}" />
@@ -538,7 +541,10 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
   <title>Technical Insights | Kataba</title>
   <meta name="description" content="Practical, source-linked technical articles on UGS evidence workflows, procedure gap analysis, and applied AI for geoscience and technical energy teams." />
   <link rel="canonical" href="https://kataba.ai/insights" />
-  <link rel="icon" href="data:," />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://kataba.ai/insights" />
   <meta property="og:title" content="Technical Insights | Kataba" />
